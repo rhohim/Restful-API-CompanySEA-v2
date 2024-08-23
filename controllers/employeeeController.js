@@ -1,13 +1,17 @@
 const db = require("../models/connection")
 const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
+const ik = new ImageKit({  
     publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
     privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
     urlEndpoint: "https://ik.imagekit.io/cretivox"
   });
 
 const getAllemployee = (req,res ) => {
-    const sql = "SELECT e.*, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id"
+    const sql = "SELECT e.*, d.id as divsion_id, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id"
+    const page = parseInt(req.query.page)|| 1;
+    const pageSize = parseInt(req.query.pageSize) || 15;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
     db.query(sql, (error, result) => {
         if (error) {
             res.status(500).json({
@@ -20,19 +24,28 @@ const getAllemployee = (req,res ) => {
                     message: "employee not found"
                 })
             } else {
-                const formattedData = result.map(data => ({
+                const paginatedResult = result.slice(start, end);
+                const formattedData = paginatedResult.map(data => ({
                     id : data.id,
                     data : {
                         name : data.employee_name, 
                         role : data.role, 
                         image : data.image,
                         department : {
-                            name : data.division_name,
-                            color : data.color
+                            id : data.divsion_id,
+                            name : data.division_name
                         }
                     }
                 }))
+                // res.json({
+                //     message : "success",
+                //     employee :formattedData
+                // })
                 res.json({
+                    page,
+                    pageSize: pageSize,
+                    totalItems: result.length,
+                    totalPages: Math.ceil(result.length / pageSize),
                     message : "success",
                     employee :formattedData
                 })
@@ -114,7 +127,8 @@ const deleteemployee = (req, res) => {
 
 const getemployeebyID = (req,res ) => {
     const employeeId = req.params.id
-    const sql = "SELECT e.*, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id where e.id = ?"
+    // console.log(employeeId);
+    const sql = "SELECT e.*, d.id as divsion_id, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id where e.id = ?"
     db.query(sql,[employeeId], (error, result) => {
         if (error) {
             res.status(500).json({
@@ -134,8 +148,8 @@ const getemployeebyID = (req,res ) => {
                         role : result[0].role, 
                         image : result[0].image,
                         department : {
-                            name : result[0].division_name,
-                            color : result[0].color
+                            id : result[0].divsion_id,
+                            name : result[0].division_name
                         }
                     }
                 })
@@ -178,7 +192,7 @@ const putemployeebyID = async (req,res) => {
         const employeename = req.body.name
         const role = req.body.role
         division = req.body.department_id
-        console.log("input ",division);
+        // console.log("input ",division);
 
         if (!division){
             const sqlSelectdivision = 'SELECT division_id FROM employee WHERE id = ?';

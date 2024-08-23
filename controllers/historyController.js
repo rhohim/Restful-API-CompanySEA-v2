@@ -24,10 +24,9 @@ const getAllhistory = (req,res ) => {
                     id: data.id,
                     data : {
                         title : data.title,
-                        subtitle : data.subtitle,
                         date : data.date,
-                        short_desc : data.short_desc,
-                        long_desc : data.long_desc,
+                        description : data.description,
+                        background_color : data.background_color,
                         image : data.image,
                         background_image : data.background_image
                     },
@@ -70,15 +69,14 @@ const posthistory = async (req, res) => {
 
         const title = req.body.title
         const date = req.body.date
-        const short_desc = req.body.short_desc
-        const long_desc = req.body.long_desc
-        const subtitle = req.body.subtitle
+        const description = req.body.description
+        const background_color = req.body.background_color
 
 
 
         // console.log(imageURL, " ", title)
-        const sql = "INSERT INTO history ( title, date, short_desc,long_desc, image, background_image, subtitle) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        const value = [title, date, short_desc,long_desc, imageURL, bgimageURL, subtitle]
+        const sql = "INSERT INTO history ( title, date, description,background_color, image, background_image) VALUES ( ?, ?, ?, ?, ?, ?)"
+        const value = [title, date, description,background_color, imageURL, bgimageURL]
 
         db.query(sql, value, (error, result) => {
             if (error) {
@@ -149,10 +147,9 @@ const gethistorybyID = (req, res) => {
                     id: result[0].id,
                     data : {
                         title : result[0].title,
-                        subtitle : result[0].subtitle,
                         date : result[0].date,
-                        short_desc : result[0].short_desc,
-                        long_desc : result[0].long_desc,
+                        description : result[0].description,
+                        background_color : result[0].background_color,
                         image : result[0].image,
                         background_image : result[0].background_image
                     },
@@ -192,7 +189,7 @@ const deletehistorybyID = (req, res) => {
 
 const puthistory = async (req, res) => {
     const historyId = req.params.id;
-    const { title, date, short_desc, subtitle } = req.body;
+    const { title, date, description, background_color } = req.body;
     let imageURL, background_imageURL;
 
     try {
@@ -223,8 +220,8 @@ const puthistory = async (req, res) => {
         imageURL = imageFile ? await uploadImage(imageFile) : await getImageURLFromDB();
         background_imageURL = bgimageFile ? await uploadImage(bgimageFile) : await getBgImageURLFromDB();
 
-        const sql = "UPDATE history SET title = ?, date = ?, short_desc = ?, subtitle = ?, image = ?, background_image = ? WHERE id = ?";
-        const values = [title, date, short_desc, subtitle, imageURL, background_imageURL, historyId];
+        const sql = "UPDATE history SET title = ?, date = ?, description = ?, background_color = ?, image = ?, background_image = ? WHERE id = ?";
+        const values = [title, date, description, background_color, imageURL, background_imageURL, historyId];
 
         db.query(sql, values, (error, result) => {
             if (error) {

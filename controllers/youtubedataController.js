@@ -25,8 +25,18 @@ const getAllyoutube_data = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_subscribers : data.total_subscribers,
-                        total_views : data.total_views,
+                        insight : [
+                            {
+                                value : data.total_subscribers,
+                                unit : "subscribers"
+                            },
+                            {
+                                value : data.total_views,
+                                unit : "total views"
+                            }
+                        ],
+                        // total_subscribers : data.total_subscribers,
+                        // total_views : data.total_views,
                         last_post : JSON.parse(data.last_post)
                     },
                 }))
@@ -163,8 +173,16 @@ const getyoutube_databyID = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_subscribers : data.total_subscribers,
-                        total_views : data.total_views,
+                        insight : [
+                            {
+                                value : data.total_subscribers,
+                                unit : "subscribers"
+                            },
+                            {
+                                value : data.total_views,
+                                unit : "total views"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     "message" : "success"

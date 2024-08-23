@@ -24,8 +24,16 @@ const getAllig_data = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_followers : data.total_followers,
-                        ER : data.ER,
+                        insight : [
+                            {
+                                value : data.total_followers,
+                                unit : "total followers"
+                            },
+                            {
+                                value : data.ER,
+                                unit : "engagement"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                 }))
@@ -156,8 +164,16 @@ const getig_databyID = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_followers : data.total_followers,
-                        ER : data.ER,
+                        insight : [
+                            {
+                                value : data.total_followers,
+                                unit : "total followers"
+                            },
+                            {
+                                value : data.ER,
+                                unit : "engagement"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     "message" : "success"

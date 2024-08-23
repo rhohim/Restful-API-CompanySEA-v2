@@ -32,7 +32,8 @@ const getAllAgency = (req, res) => {
                         username: data.username,
                         image_post: data.image_post,
                         likes: data.likes,
-                        caption: data.caption
+                        caption: data.caption,
+                        link : data.link
                     },
                 }));
                 res.json({
@@ -78,9 +79,10 @@ const postAgency = async (req, res) => {
         const username = req.body.username;
         const likes = req.body.likes;
         const caption = req.body.caption;
+        const link = req.body.link
 
-        const sql = "INSERT INTO agency (photo_profile, username, image_post, likes, caption) VALUES (?, ?, ?, ?, ?)";
-        const values = [photoProfileURL, username, postImageURL, likes, caption];
+        const sql = "INSERT INTO agency (photo_profile, username, image_post, likes, caption, link) VALUES (?, ?, ?, ?, ?, ?)";
+        const values = [photoProfileURL, username, postImageURL, likes, caption, link];
 
         db.query(sql, values, (error, result) => {
             if (error) {
@@ -152,7 +154,8 @@ const getAgencyByID = (req, res) => {
                         username: result[0].username,
                         image_post: result[0].image_post,
                         likes: result[0].likes,
-                        caption: result[0].caption
+                        caption: result[0].caption,
+                        link : result[0].link
                     },
                     message: "Success"
                 });
@@ -189,7 +192,7 @@ const deleteAgencyByID = (req, res) => {
 
 const putAgency = async (req, res) => {
     const agencyId = req.params.id;
-    const { username, likes, caption } = req.body;
+    const { username, likes, caption , link} = req.body;
     let photoProfileURL, postImageURL;
 
     try {
@@ -220,8 +223,8 @@ const putAgency = async (req, res) => {
         photoProfileURL = photoProfileFile ? await uploadImage(photoProfileFile) : await getPhotoProfileURLFromDB();
         postImageURL = postImageFile ? await uploadImage(postImageFile) : await getPostImageURLFromDB();
 
-        const sql = "UPDATE agency SET photo_profile = ?, username = ?, image_post = ?, likes = ?, caption = ? WHERE id = ?";
-        const values = [photoProfileURL, username, postImageURL, likes, caption, agencyId];
+        const sql = "UPDATE agency SET photo_profile = ?, username = ?, image_post = ?, likes = ?, caption = ?, link = ? WHERE id = ?";
+        const values = [photoProfileURL, username, postImageURL, likes, caption, link, agencyId];
 
         db.query(sql, values, (error, result) => {
             if (error) {

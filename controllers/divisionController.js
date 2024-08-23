@@ -11,7 +11,8 @@ const getAlldivision = (req,res ) => {
         SELECT 
             d.id AS divisionId, 
             d.division_name,
-            d.image as icon, 
+            d.image as icon,
+            d.description,
             e.id AS employeeId, 
             e.employee_name, 
             e.role, 
@@ -42,7 +43,8 @@ const getAlldivision = (req,res ) => {
                             id: data.divisionId,
                             data: {
                                 name: data.division_name,
-                                icon : data.icon,
+                                image : data.icon,
+                                descripton : data.description,
                                 employee: []
                             }
                         };
@@ -83,10 +85,10 @@ const postdivision = async (req, res) => {
 
             imageURL = imageUploadResponse.url;
 
-            const {name} = req.body
+            const {name, description} = req.body
 
-            const sql = "INSERT INTO division (division_name, image) VALUES (?,?)"
-            const value = [name,imageURL]
+            const sql = "INSERT INTO division (division_name, image, description) VALUES (?,?,?)"
+            const value = [name,imageURL, description]
             db.query(sql, value, (error, result) => {
                 if (error) {
                     res.status(500).json({
@@ -140,6 +142,7 @@ const putdivision = async (req, res) => {
     const divisionId = req.params.id
     let nameDivision, imageURL
     nameDivision = req.body.name
+    description = req.body.description
     // console.log(nameDivision);
     try {
         const imageFile = req.files["image"]
@@ -178,8 +181,8 @@ const putdivision = async (req, res) => {
         }
 
         function updatedivision(){
-            const sql = "UPDATE division SET division_name = ?, image = ? WHERE id = ?"
-            const value = [nameDivision, imageURL, divisionId]
+            const sql = "UPDATE division SET division_name = ?, image = ?, description = ? WHERE id = ?"
+            const value = [nameDivision, imageURL, description, divisionId]
             db.query(sql, value, (error, result) => {
                 if (error) {
                     console.error("Error updating division:", error);
@@ -217,6 +220,7 @@ const getdivisionbyID = (req, res) => {
             d.id AS divisionId, 
             d.division_name,
             d.image as icon, 
+            d.description,
             e.id AS employeeId, 
             e.employee_name, 
             e.role, 
@@ -250,7 +254,8 @@ const getdivisionbyID = (req, res) => {
                             id: data.divisionId,
                             data: {
                                 name: data.division_name,
-                                icon: data.icon,
+                                image: data.icon,
+                                description : data.description,
                                 employees: []
                             }
                         };

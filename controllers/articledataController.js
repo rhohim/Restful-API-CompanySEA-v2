@@ -24,8 +24,16 @@ const getAllarticle_data = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_visitor : data.total_visitor,
-                        total_article : data.total_article,
+                        insight : [
+                            {
+                                value : data.total_visitor,
+                                unit : "total visitor"
+                            },
+                            {
+                                value : data.total_article,
+                                unit : "total article"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     
@@ -162,8 +170,16 @@ const getarticle_databyID = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_visitor : data.total_visitor,
-                        total_article : data.total_article,
+                        insight : [
+                            {
+                                value : data.total_visitor,
+                                unit : "total visitor"
+                            },
+                            {
+                                value : data.total_article,
+                                unit : "total article"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     "message" : "success"

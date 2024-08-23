@@ -23,8 +23,16 @@ const getAlltiktok_data = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_followers : data.total_followers,
-                        total_views : data.total_views,
+                        insight : [
+                            {
+                                value : data.total_followers,
+                                unit : "total followers"
+                            },
+                            {
+                                value : data.total_views,
+                                unit : "total views"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     // "message" : "success"
@@ -155,8 +163,16 @@ const gettiktok_databyID = (req,res ) => {
                 const formattedData = result.map(data => ({
                     id: data.id,
                     data : {
-                        total_followers : data.total_followers,
-                        total_views : data.total_views,
+                        insight : [
+                            {
+                                value : data.total_followers,
+                                unit : "total followers"
+                            },
+                            {
+                                value : data.total_views,
+                                unit : "total views"
+                            }
+                        ],
                         last_post : JSON.parse(data.last_post)
                     },
                     "message" : "success"

@@ -31,7 +31,9 @@ const getAllportofolio = (req,res) => {
                         team : data.team, 
                         content_1 : data.content_1, 
                         content_2 : data.content_2,
-                        cover: data.portofolio_cover, 
+                        cover: data.portofolio_cover,
+                        slug: data.services_name.toLowerCase()+data.slug,
+                        meta_description : data.meta_description, 
                         created_at : data.created_at,
                         client : {
                             name :data.client_name,
@@ -91,7 +93,7 @@ const postportofolio = async (req, res) => {
         }
 
 
-        console.log(coverURL);
+        // console.log(coverURL);
         const title = req.body.title
         const introduction = req.body.introduction
         const year_project = req.body.year_project
@@ -101,8 +103,10 @@ const postportofolio = async (req, res) => {
         const idservices = req.body.services_id
         const creationDate = new Date()
         const created_at = creationDate.toISOString().slice(0, 10)
-        const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, client_id, services_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
-        const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, idclient, idservices]
+        const slug = "/"+title.toLowerCase().replace(/ /g, '-')
+        const meta = req.body.meta_description
+        const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, slug, meta_description, client_id, services_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, slug, meta, idclient, idservices]
         db.query(sql, value, (error, result) => {
             if (error) {
                 res.status(500).json({
@@ -179,7 +183,9 @@ const getportofoliobyID = (req,res) => {
                         team : result[0].team, 
                         content_1 : result[0].content_1, 
                         content_2 : result[0].content_2,
-                        cover: result[0].portofolio_cover, 
+                        cover: result[0].portofolio_cover,
+                        slug: result[0].services_name.toLowerCase()+result[0].slug,
+                        meta_description : result[0].meta_description,  
                         created_at : result[0].created_at,
                         client : {
                             name :result[0].client_name,
@@ -232,6 +238,8 @@ const putportofolio = async (req, res) => {
         const content1File = req.files['content1']
         const content2File = req.files['content2']
         const title = req.body.title
+        const slug = "/"+title.toLowerCase().replace(/ /g, '-')
+        const meta = req.body.meta_description
         const introduction = req.body.introduction
         const year_project = req.body.year_project
         const scope = req.body.scope
@@ -385,8 +393,8 @@ const putportofolio = async (req, res) => {
 
 
         function updateportofolio(){
-            const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
-            const value = [title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, client, services, portofolioId]
+            const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
+            const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta, coverURL, client, services, portofolioId]
             db.query(sql, value, (error, result) => {
                 if(error){
                     console.log("error updating client", error)
