@@ -44,7 +44,7 @@ const getAlldivision = (req,res ) => {
                             data: {
                                 name: data.division_name,
                                 image : data.icon,
-                                descripton : data.description,
+                                description : data.description,
                                 employee: []
                             }
                         };

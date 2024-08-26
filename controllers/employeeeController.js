@@ -7,51 +7,81 @@ const ik = new ImageKit({
   });
 
 const getAllemployee = (req,res ) => {
-    const sql = "SELECT e.*, d.id as divsion_id, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id"
-    const page = parseInt(req.query.page)|| 1;
+    const baseSQL = `
+        SELECT e.*, d.id AS division_id, d.division_name 
+        FROM employee e 
+        LEFT JOIN division d ON e.division_id = d.id
+    `;
+
+    const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 15;
+    const searchName = req.query.name ? `%${req.query.name}%` : null;
     const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    db.query(sql, (error, result) => {
+
+    // Extend SQL query with search condition if searchName is provided
+    let sql = baseSQL;
+    const params = [];
+
+    if (searchName) {
+        sql += ` WHERE e.employee_name LIKE ?`;
+        params.push(searchName);
+    }
+
+    // Apply pagination
+    sql += ` LIMIT ?, ?`;
+    params.push(start, pageSize);
+
+    db.query(sql, params, (error, result) => {
         if (error) {
             res.status(500).json({
-                message: "error fetching employee",
-                error : error
-            })
+                message: "Error fetching employees",
+                error: error
+            });
         } else {
-            if (result.length === 0){
+            if (result.length === 0) {
                 res.status(404).json({
-                    message: "employee not found"
-                })
+                    message: "Employee not found"
+                });
             } else {
-                const paginatedResult = result.slice(start, end);
-                const formattedData = paginatedResult.map(data => ({
-                    id : data.id,
-                    data : {
-                        name : data.employee_name, 
-                        role : data.role, 
-                        image : data.image,
-                        department : {
-                            id : data.divsion_id,
-                            name : data.division_name
+                const formattedData = result.map(data => ({
+                    id: data.id,
+                    data: {
+                        name: data.employee_name,
+                        role: data.role,
+                        image: data.image,
+                        department: {
+                            id: data.division_id,
+                            name: data.division_name
                         }
                     }
-                }))
-                // res.json({
-                //     message : "success",
-                //     employee :formattedData
-                // })
-                res.json({
-                    page,
-                    pageSize: pageSize,
-                    totalItems: result.length,
-                    totalPages: Math.ceil(result.length / pageSize),
-                    message : "success",
-                    employee :formattedData
-                })
+                }));
+
+                // Count the total items based on the search condition
+                const countSQL = searchName
+                    ? `SELECT COUNT(*) AS count FROM employee e WHERE e.employee_name LIKE ?`
+                    : `SELECT COUNT(*) AS count FROM employee`;
+
+                db.query(countSQL, searchName ? [searchName] : [], (countError, countResult) => {
+                    if (countError) {
+                        res.status(500).json({
+                            message: "Error counting employees",
+                            error: countError
+                        });
+                    } else {
+                        const totalItems = countResult[0].count;
+                        res.json({
+                            page,
+                            pageSize,
+                            totalItems,
+                            totalPages: Math.ceil(totalItems / pageSize),
+                            message: "Success",
+                            employee: formattedData
+                        });
+                    }
+                });
             }
         }
-    })
+    });
 }
 
 const postemployee = async (req, res) => {
@@ -127,7 +157,7 @@ const deleteemployee = (req, res) => {
 
 const getemployeebyID = (req,res ) => {
     const employeeId = req.params.id
-    // console.log(employeeId);
+    console.log(req.query.name);
     const sql = "SELECT e.*, d.id as divsion_id, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id where e.id = ?"
     db.query(sql,[employeeId], (error, result) => {
         if (error) {
