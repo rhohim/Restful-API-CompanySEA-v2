@@ -10,8 +10,8 @@ services:
     stdin_open: true
     environment:
       - PORT=30098
-      - host=cbn360
-      - user=root
+      - host=db
+      - user=app_user
       - password=Aku664329#
       - database=seoweb
     command: npm start
@@ -20,7 +20,7 @@ services:
 
   db:
     image: mysql:latest
-    container_name: mysql-container
+    container_name: mysql-container-cbn
     environment:
       MYSQL_ROOT_PASSWORD: Aku664329#
       MYSQL_DATABASE: seoweb
