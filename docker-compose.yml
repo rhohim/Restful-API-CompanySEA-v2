@@ -1,6 +1,6 @@
 services:
   app:
-    container_name: "app"
+    container_name: node-docker
     build: .
     volumes:
       - .:/app
@@ -31,3 +31,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
+
+volumes:
+  node_modules:
+  db_data:
