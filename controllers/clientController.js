@@ -5,53 +5,73 @@ const ik = new ImageKit({
     privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
     urlEndpoint: "https://ik.imagekit.io/cretivox"
   });
- 
+  
 const getAllclient = (req,res ) => {
-    const sql = "SELECT * FROM client"
-    const page = parseInt(req.query.page)|| 1;
+    const baseSQL = "SELECT * FROM client";
+    const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 15;
-    // console.log(page, pageSize)
+    const searchName = req.query.name ? `%${req.query.name}%` : null;
     const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    // console.log(start,end)
-    db.query(sql, (error, result) => {
-        if (error){
+    
+    let sql = baseSQL;
+    const params = [];
+
+    // Extend SQL query with search condition if searchName is provided
+    if (searchName) {
+        sql += " WHERE client_name LIKE ?";
+        params.push(searchName);
+    }
+
+    // Apply pagination
+    sql += " LIMIT ?, ?";
+    params.push(start, pageSize);
+
+    db.query(sql, params, (error, result) => {
+        if (error) {
             res.status(500).json({
-                message: "Error fetching client",
+                message: "Error fetching clients",
                 error: error
             });
         } else {
             if (result.length === 0) {
-                res.status(404).json({ 
-                    message: "client not found"
+                res.status(404).json({
+                    message: "Client not found"
                 });
             } else {
-                const paginatedResult = result.slice(start, end);
-                const formattedData = paginatedResult.map(data => ({
-                        id: data.id,
-                        data : {
-                            name : data.client_name,
-                            logo : data.logo,
-                        }
-                }))
-                // const formattedData = result.map(data => ({
-                //     id: data.id,
-                //     data : {
-                //         name : data.client_name,
-                //         logo : data.logo,
-                //     }
-                // }))
-                res.json({
-                    page,
-                    pageSize: pageSize,
-                    totalItems: result.length,
-                    totalPages: Math.ceil(result.length / pageSize),
-                    message : "success",
-                    client :formattedData
-                })
+                const formattedData = result.map(data => ({
+                    id: data.id,
+                    data: {
+                        name: data.client_name,
+                        logo: data.logo
+                    }
+                }));
+
+                // Count the total items based on the search condition
+                const countSQL = searchName
+                    ? "SELECT COUNT(*) AS count FROM client WHERE client_name LIKE ?"
+                    : "SELECT COUNT(*) AS count FROM client";
+
+                db.query(countSQL, searchName ? [searchName] : [], (countError, countResult) => {
+                    if (countError) {
+                        res.status(500).json({
+                            message: "Error counting clients",
+                            error: countError
+                        });
+                    } else {
+                        const totalItems = countResult[0].count;
+                        res.json({
+                            page,
+                            pageSize,
+                            totalItems,
+                            totalPages: Math.ceil(totalItems / pageSize),
+                            message: "Success",
+                            client: formattedData
+                        });
+                    }
+                });
+            }
         }
-        }      
-    })
+    });
 }
 
 const postclient = async (req, res) => {

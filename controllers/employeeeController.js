@@ -5,7 +5,7 @@ const ik = new ImageKit({
     privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
     urlEndpoint: "https://ik.imagekit.io/cretivox"
   });
-
+ 
 const getAllemployee = (req,res ) => {
     const baseSQL = `
         SELECT e.*, d.id AS division_id, d.division_name 
