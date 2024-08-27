@@ -8,7 +8,7 @@ const ik = new ImageKit({
 
 const getAllintern_batch = (req, res) => {
     const sql = `
-        SELECT b.*, m.member_name, m.image AS member_image, m.university, m.division, m.instagram 
+        SELECT b.*, m.member_name, m.image AS member_image, m.university, m.division, m.instagram as ig_account
         FROM intern_batch b 
         LEFT JOIN intern_member m 
         ON m.batch_id = b.id
@@ -72,7 +72,7 @@ const getAllintern_batch = (req, res) => {
                     image: data.member_image, 
                     university: data.university,
                     division: data.division,
-                    instagram: data.instagram
+                    instagram: data.ig_account
                 });
             }
 

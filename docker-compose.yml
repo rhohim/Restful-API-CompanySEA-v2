@@ -1,0 +1,26 @@
+version: "3.3"
+
+services:
+  app:
+    container_name: "app"
+    build: .
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    ports:
+      - 30098:30098
+    stdin_open: true
+    environment:
+      - PORT = 30098
+      - host = 'localhost'
+      - user = 'root'
+      - password = ''
+      - database = 'seoweb'
+      - tokensecret = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.BURNeyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYWRtaW5fY2JuMzYwIiwiaWF0IjoxNzIyNTgyagust2024OTI1LCJleODY1MjV9.CVOXCNg1USVPJyZpIExDrz48kmDDu0s6PbOEi7ASXLPDs0YNOW!'
+      - APIFY = 'apify_api_bhrNQzFP0PrgO224texPGqbJM8dcgC0LNsrA'
+      - admintoken = '221100'
+      - spassword = 'dULl98s'
+      - uname = 'admin_cbn360'
+    command: npm start
+volumes:
+  node_modules:
