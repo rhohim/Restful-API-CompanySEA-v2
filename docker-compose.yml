@@ -17,11 +17,8 @@ services:
   db:
     image: mysql:latest
     container_name: mysql-container-cbn
-    environment:
-      MYSQL_ROOT_PASSWORD: Aku664329#
-      MYSQL_DATABASE: seoweb
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: Aku664329#
+    env_file:
+      - .env
     ports:
       - "3306:3306"
     volumes:
