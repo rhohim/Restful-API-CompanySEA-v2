@@ -14,6 +14,11 @@ services:
       - user=app_user
       - password=Aku664329#
       - database=seoweb
+      - tokensecret=eyJhbGc!
+      - APIFY=apify_api_bhrNQzFP0PrgO224texPGqbJM8dcgC0LNsrA
+      - admintoken=221100
+      - spassword=dULl98s
+      - uname=admin_cbn360
     command: npm start
     depends_on:
       - db
