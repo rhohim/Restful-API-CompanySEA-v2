@@ -8,17 +8,8 @@ services:
     ports:
       - "30098:30098"
     stdin_open: true
-    environment:
-      - PORT=30098
-      - host=db
-      - user=app_user
-      - password=Aku664329#
-      - database=seoweb
-      - tokensecret=eyJhbGc!
-      - APIFY=apify_api_bhrNQzFP0PrgO224texPGqbJM8dcgC0LNsrA
-      - admintoken=221100
-      - spassword=dULl98s
-      - uname=admin_cbn360
+    env_file:
+      - .env
     command: npm start
     depends_on:
       - db
