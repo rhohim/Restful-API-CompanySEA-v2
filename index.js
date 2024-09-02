@@ -47,7 +47,7 @@ app.use('/api/v1/company/youtube', youtubedataRoute)
 app.use('/api/v1/company/article', articledataRoute)
 app.use('/api/v1/company/agency', agencyRoute)
 app.use('/api/v1/company/platform', platformRoute)
-app.use('/login/v1/company', loginRoute)
+app.use('/api/v1/login/company', loginRoute)
 
 app.use('/api/v1/intern/batch', middleAuth, internbatchRoute)
 app.use('/api/v1/intern/member', middleAuth, internmemberRoute)

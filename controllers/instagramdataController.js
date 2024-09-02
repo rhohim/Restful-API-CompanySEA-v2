@@ -31,7 +31,7 @@ const getAllig_data = (req,res ) => {
                             },
                             {
                                 value : data.ER,
-                                unit : "engagement"
+                                unit : "Accounts Reached"
                             }
                         ],
                         last_post : JSON.parse(data.last_post)
@@ -171,7 +171,7 @@ const getig_databyID = (req,res ) => {
                             },
                             {
                                 value : data.ER,
-                                unit : "engagement"
+                                unit : "Accounts Reached"
                             }
                         ],
                         last_post : JSON.parse(data.last_post)
