@@ -8,7 +8,7 @@ const ik = new ImageKit({
  
 const getAllportofolio = (req,res) => {
     // const sql = "SELECT * FROM portofolio"
-    const sql = "SELECT p.*, s.services_name, s.cover, s.short_description, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id"
+    const sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description, cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id"
     db.query(sql, (error, result) => {
         if (error) {
             res.status(500).json({
@@ -36,10 +36,12 @@ const getAllportofolio = (req,res) => {
                         meta_description : data.meta_description, 
                         created_at : data.created_at,
                         client : {
+                            id : id.client_id,
                             name :data.client_name,
                             logo : data.logo
                         },
                         services : {
+                            id : services_id,
                             name : data.services_name,
                             cover : data.cover,
                             short_description : data.short_description
@@ -159,7 +161,7 @@ const deleteportofolio = (req, res) => {
 
 const getportofoliobyID = (req,res) => {
     const portofolioId = req.params.id
-    const sql = "SELECT p.*, s.services_name, s.cover, s.short_description, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.id = ?"
+    const sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.id = ?"
     db.query(sql,[portofolioId], (error, result) => {
         if (error) {
             console.error("error fetching portofolio: ", error)
@@ -188,10 +190,12 @@ const getportofoliobyID = (req,res) => {
                         meta_description : result[0].meta_description,  
                         created_at : result[0].created_at,
                         client : {
+                            id : result[0].client_id,
                             name :result[0].client_name,
                             logo : result[0].logo
                         },
                         services : {
+                            id : result[0].services_id,
                             name : result[0].services_name,
                             cover : result[0].cover,
                             short_description : result[0].short_description
