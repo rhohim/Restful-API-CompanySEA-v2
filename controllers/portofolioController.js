@@ -36,12 +36,12 @@ const getAllportofolio = (req,res) => {
                         meta_description : data.meta_description, 
                         created_at : data.created_at,
                         client : {
-                            id : id.client_id,
+                            id : data.client_id,
                             name :data.client_name,
                             logo : data.logo
                         },
                         services : {
-                            id : services_id,
+                            id : data.services_id,
                             name : data.services_name,
                             cover : data.cover,
                             short_description : data.short_description
@@ -50,7 +50,7 @@ const getAllportofolio = (req,res) => {
                 }))
                 res.json({
                     message : "success",
-                    portofolio :formattedData
+                    portfolio :formattedData
                 })
             }
         }
@@ -431,7 +431,7 @@ const putportofolio = async (req, res) => {
     
     // console.log(title,introduction, year_project, scope,team,content_1,cover);
 }
-
+ 
 module.exports = {
     getAllportofolio,
     postportofolio,

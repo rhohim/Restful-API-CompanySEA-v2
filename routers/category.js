@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const categorycontroller = require("../controllers/categoryController")
 
-router.route('/')
+router.route('/') 
     .get(categorycontroller.getAllcategory)
     .post(categorycontroller.postCategory)
     .delete(categorycontroller.deleteCategory)
