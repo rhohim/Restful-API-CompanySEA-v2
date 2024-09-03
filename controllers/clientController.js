@@ -21,7 +21,7 @@ const getAllclient = (req,res ) => {
         sql += " WHERE client_name LIKE ?";
         params.push(searchName);
     }
-
+        
     // Apply pagination
     sql += " LIMIT ?, ?";
     params.push(start, pageSize);
