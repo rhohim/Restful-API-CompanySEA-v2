@@ -30,7 +30,7 @@ const getAllportofolio = (req,res) => {
                         scope : data.scope, 
                         team : data.team, 
                         content_1 : data.content_1, 
-                        content_2 : data.content_2,
+                        // content_2 : data.content_2,
                         cover: data.portofolio_cover,
                         slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
                         meta_description : data.meta_description, 
@@ -83,16 +83,17 @@ const postportofolio = async (req, res) => {
             content1URL = content1UploadResponse.url;
         }
 
-        if (req.files && req.files['content2'] && req.files['content2'][0]) {
-            const content2File = req.files['content2'][0];
+        // if (req.files && req.files['content2'] && req.files['content2'][0]) {
+        //     const content2File = req.files['content2'][0];
 
-            const content2UploadResponse = await ik.upload({
-                file: content2File.buffer,
-                fileName: content2File.originalname,
-            });
+        //     const content2UploadResponse = await ik.upload({
+        //         file: content2File.buffer,
+        //         fileName: content2File.originalname,
+        //     });
 
-            content2URL = content2UploadResponse.url;
-        }
+        //     content2URL = content2UploadResponse.url;
+        // }
+        content2URL = ""
 
 
         // console.log(coverURL);
@@ -184,7 +185,7 @@ const getportofoliobyID = (req,res) => {
                         scope : result[0].scope, 
                         team : result[0].team, 
                         content_1 : result[0].content_1, 
-                        content_2 : result[0].content_2,
+                        // content_2 : result[0].content_2,
                         cover: result[0].portofolio_cover,
                         slug: result[0].services_name.toLowerCase().replace(/ /g, '-')+result[0].slug,
                         meta_description : result[0].meta_description,  
@@ -240,7 +241,7 @@ const putportofolio = async (req, res) => {
     try {
         const coverFile = req.files['cover']
         const content1File = req.files['content1']
-        const content2File = req.files['content2']
+        // const content2File = req.files['content2']
         const title = req.body.title
         const slug = "/"+title.toLowerCase().replace(/ /g, '-')
         const meta = req.body.meta_description
@@ -329,37 +330,38 @@ const putportofolio = async (req, res) => {
             // updateportofolio();
         }
 
-        if (!content2File) {
-            const sqlSelectImage = 'SELECT content_2 FROM portofolio WHERE id = ?';
-            db.query(sqlSelectImage, [portofolioId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching content_2 image:", error);
-                    res.status(500).json({
-                        message: "Error fetching content_2 image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].content_2) {
-                        res.status(404).json({
-                            message: "content_2 image not found in the database"
-                        });
-                    } else {
-                        content2URL = result[0].content_2;
-                        // Proceed to update the portofolio
-                        // updateportofolio();
-                    }
-                }
-            });
-        } else {
-            const content2File = req.files['content2'][0];     
-            const portofolioImageUploadResponse = await ik.upload({
-                file: content2File.buffer,
-                fileName: content2File.originalname,
-            });
-            content2URL = portofolioImageUploadResponse.url;
-            // Proceed to update the portofolio
-            // updateportofolio();
-        }
+        // if (!content2File) {
+        //     const sqlSelectImage = 'SELECT content_2 FROM portofolio WHERE id = ?';
+        //     db.query(sqlSelectImage, [portofolioId], (error, result) => {
+        //         if (error) {
+        //             console.error("Error fetching content_2 image:", error);
+        //             res.status(500).json({
+        //                 message: "Error fetching content_2 image",
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.length === 0 || !result[0].content_2) {
+        //                 res.status(404).json({
+        //                     message: "content_2 image not found in the database"
+        //                 });
+        //             } else {
+        //                 content2URL = result[0].content_2;
+        //                 // Proceed to update the portofolio
+        //                 // updateportofolio();
+        //             }
+        //         }
+        //     });
+        // } else {
+        //     const content2File = req.files['content2'][0];     
+        //     const portofolioImageUploadResponse = await ik.upload({
+        //         file: content2File.buffer,
+        //         fileName: content2File.originalname,
+        //     });
+        //     content2URL = portofolioImageUploadResponse.url;
+        //     // Proceed to update the portofolio
+        //     // updateportofolio();
+        // }
+        content2URL = ""
 
 
         if (!coverFile) {
