@@ -62,7 +62,7 @@ const getAllhighlight = (req, res) => {
                             content_1 : data.content_1, 
                             content_2 : data.content_2,
                             cover: data.portofolio_cover,
-                            slug: data.services_name.toLowerCase()+data.slug,
+                            slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
                             meta_description : data.meta_description, 
                             created_at : data.created_at,
                             client : {
