@@ -13,8 +13,6 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-const MAX_TIMEOUT = 2147483; // Maximum timeout value in seconds (~24 days)
-
 function createConnection() {
     const db = mysql.createConnection({
         host: process.env.host,
@@ -38,14 +36,18 @@ function createConnection() {
 
 function handleReconnect() {
     const db = createConnection();
-    
-    // Set keep-alive interval
+
+    // Set keep-alive interval (every hour)
     setInterval(() => {
         db.query('SELECT 1', (err) => {
-            if (err) throw err;
-            console.log('Keep-alive query sent');
+            if (err) {
+                console.error('Keep-alive query failed:', err);
+                handleReconnect(); // Reconnect if keep-alive fails
+            } else {
+                console.log('Keep-alive query sent');
+            }
         });
-    }, MAX_TIMEOUT * 1000 - 1000); // Send query just before the max timeout
+    }, 1000 * 60 * 60); // Every hour
 
     return db;
 }
