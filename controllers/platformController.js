@@ -82,52 +82,57 @@ const deleteplatform = (req, res) => {
 }
 
 const putplatform = (req, res) => {
-    let updatevalue_1, updateunit_1, updatevalue_2, updateunit_2, value_1, unit_1, value_2, unit_2
-    const id = req.params.id
-    value_1 = req.body.value_1
-    unit_1 = req.body.unit_1
-    value_2 = req.body.value_2,
-    unit_2 = req.body.unit_2
-    // console.log(value_1, unit_1);
-    const fetchSql = 'SELECT value_1, unit_1, value_2, unit_2 FROM platform WHERE id = ?';
-    db.query(fetchSql, [id], (fetchError, fetchResult) => {
-        if (fetchError) {
-            console.error("Error fetching user details:", fetchError);
-            res.status(500).json({
-                message: "Error fetching user details",
-                error: fetchError
-            });
-        } else {
-            const existingValues = fetchResult[0];
-            console.log(existingValues);
-            updatevalue_1 = value_1 !== undefined ? value_1 : existingValues.value_1;
-            updateunit_1 = unit_1 !== undefined ? unit_1 : existingValues.unit_1;
-            updatevalue_2 = value_2 !== undefined ? value_2 : existingValues.value_2;
-            updateunit_2 = unit_2 !== undefined ? unit_2 : existingValues.unit_2;
-            const sql = "UPDATE platform SET value_1 = ?, unit_1 = ?, value_2 = ?, unit_2 = ? WHERE id = ?"
-            console.log(updatevalue_1, updateunit_1);
-            const value = [updatevalue_1,updateunit_1, updatevalue_2,updateunit_2, id]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    console.error("Error updating platform:", error);
-                    res.status(500).json({
+    const id = req.params.id;
+    const { value_1, unit_1, value_2, unit_2 } = req.body;
+
+    try {
+        const fetchSql = 'SELECT value_1, unit_1, value_2, unit_2 FROM platform WHERE id = ?';
+        
+        db.query(fetchSql, [id], (fetchError, fetchResult) => {
+            if (fetchError) {
+                console.error("Error fetching platform details:", fetchError);
+                return res.status(500).json({
+                    message: "Error fetching platform details",
+                    error: fetchError
+                });
+            }
+
+            if (fetchResult.length === 0) {
+                return res.status(404).json({ message: "Platform not found" });
+            }
+
+            
+            const { value_1: existingValue1, unit_1: existingUnit1, value_2: existingValue2, unit_2: existingUnit2 } = fetchResult[0];
+
+            
+            const updateValue1 = value_1 ?? existingValue1;
+            const updateUnit1 = unit_1 ?? existingUnit1;
+            const updateValue2 = value_2 ?? existingValue2;
+            const updateUnit2 = unit_2 ?? existingUnit2;
+
+            const updateSql = "UPDATE platform SET value_1 = ?, unit_1 = ?, value_2 = ?, unit_2 = ? WHERE id = ?";
+            const values = [updateValue1, updateUnit1, updateValue2, updateUnit2, id];
+
+            db.query(updateSql, values, (updateError, result) => {
+                if (updateError) {
+                    console.error("Error updating platform:", updateError);
+                    return res.status(500).json({
                         message: "Error updating platform",
-                        error: error
+                        error: updateError
                     });
-                } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "platform not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
                 }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ message: "Platform not found" });
+                }
+
+                res.json({ message: "Updated" });
             });
-        }
-    })
+        });
+    } catch (err) {
+        console.error("An error occurred:", err);
+        res.status(500).json({ message: "An error occurred", error: err.message });
+    }
 }
 
 const getAllplatformbyID = (req,res ) => {

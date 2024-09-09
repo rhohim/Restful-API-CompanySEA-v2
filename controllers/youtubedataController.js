@@ -1,11 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const { link } = require("../routers/category");
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
 
 
 const getAllyoutube_data = (req,res ) => {
@@ -52,64 +46,29 @@ const getAllyoutube_data = (req,res ) => {
 const postyoutube_data = async (req, res) => {
     try {
         let imageURL1, imageURL2, imageURL3;
-
-        if (req.files && req.files['image_1'] && req.files['image_1'][0]) {
-            const image_1File = req.files['image_1'][0];
-            try {
-                const image_1UploadResponse = await ik.upload({
-                    file: image_1File.buffer,
-                    fileName: image_1File.originalname,
-                });
-                imageURL1 = image_1UploadResponse.url;
-            } catch (uploadError) {
-                console.error("Error uploading image_1:", uploadError);
-                return res.status(500).json({ message: "Error uploading image_1", error: uploadError });
-            }
-        }
-
-        if (req.files && req.files['image_2'] && req.files['image_2'][0]) {
-            const image_2File = req.files['image_2'][0];
-            try {
-                const image_2UploadResponse = await ik.upload({
-                    file: image_2File.buffer,
-                    fileName: image_2File.originalname,
-                });
-                imageURL2 = image_2UploadResponse.url;
-            } catch (uploadError) {
-                console.error("Error uploading image_2:", uploadError);
-                return res.status(500).json({ message: "Error uploading image_2", error: uploadError });
-            }
-        }
-
-        if (req.files && req.files['image_3'] && req.files['image_3'][0]) {
-            const image_3File = req.files['image_3'][0];
-            try {
-                const image_3UploadResponse = await ik.upload({
-                    file: image_3File.buffer,
-                    fileName: image_3File.originalname,
-                });
-                imageURL3 = image_3UploadResponse.url;
-            } catch (uploadError) {
-                console.error("Error uploading image_3:", uploadError);
-                return res.status(500).json({ message: "Error uploading image_3", error: uploadError });
-            }
-        }
-
+    
+        const imageFile_1 = req.files && req.files['image_1'] && req.files['image_1'][0];
+        const imageFile_2 = req.files && req.files['image_2'] && req.files['image_2'][0];
+        const imageFile_3 = req.files && req.files['image_3'] && req.files['image_3'][0];
+        
+        imageURL1 = imageFile_1 ? await file.uploadFile(imageFile_1) : '';
+        imageURL2 = imageFile_2 ? await file.uploadFile(imageFile_2) : '';
+        imageURL3 = imageFile_3 ? await file.uploadFile(imageFile_3) : '';
+    
         const { subscribers, views, title_1, description_1, year_1, brand_1, link_1, title_2, description_2, year_2, brand_2, link_2, title_3, description_3, year_3, brand_3, link_3 } = req.body;
-        console.log(imageURL1,imageURL2,imageURL3);
+    
         let itemsArray = [
-            { title: title_1, description: description_1, year: year_1, brand: brand_1, imageurl: imageURL1, link : link_1 },
-            { title: title_2, description: description_2, year: year_2, brand: brand_2, imageurl: imageURL2, link : link_2 },
-            { title: title_3, description: description_3, year: year_3, brand: brand_3, imageurl: imageURL3, link : link_3 }
+            { title: title_1, description: description_1, year: year_1, brand: brand_1, imageurl: imageURL1, link: link_1 },
+            { title: title_2, description: description_2, year: year_2, brand: brand_2, imageurl: imageURL2, link: link_2 },
+            { title: title_3, description: description_3, year: year_3, brand: brand_3, imageurl: imageURL3, link: link_3 }
         ];
-
+    
         const itemsArrayJson = JSON.stringify(itemsArray);
         const sql = "INSERT INTO youtube_data (total_subscribers, total_views, last_post) VALUES (?, ?, ?)";
         const values = [subscribers, views, itemsArrayJson];
-
+    
         db.query(sql, values, (error, result) => {
             if (error) {
-                console.error("Error inserting youtube_data:", error);
                 return res.status(500).json({ message: "Error inserting youtube_data", error });
             } else {
                 res.json({
@@ -118,9 +77,8 @@ const postyoutube_data = async (req, res) => {
                 });
             }
         });
-
+    
     } catch (err) {
-        console.error("An unexpected error occurred:", err);
         res.status(500).send({ error: 'Internal Server Error', details: err.message });
     }
 };
@@ -220,44 +178,35 @@ const deleteyoutube_databyID = (req, res) => {
 }
 
 const putyoutube_data = async (req, res) => {
-    const igDataId = req.params.id;
+    const youtubeDataId = req.params.id;
     const { subscribers, views, title_1, description_1, year_1, brand_1, title_2, description_2, year_2, brand_2, title_3, description_3, year_3, brand_3 } = req.body;
+    const imageFile_1 = req.files && req.files['image_1'] && req.files['image_1'][0];
+    const imageFile_2 = req.files && req.files['image_2'] && req.files['image_2'][0];
+    const imageFile_3 = req.files && req.files['image_3'] && req.files['image_3'][0];
 
-    try { 
+    try {
         const getCurrentItemsFromDB = () => new Promise((resolve, reject) => {
-            db.query('SELECT last_post FROM youtube_data WHERE id = ?', [igDataId], (error, result) => {
+            db.query('SELECT last_post FROM youtube_data WHERE id = ?', [youtubeDataId], (error, result) => {
                 if (error) return reject("Error fetching youtube_data items: " + error);
                 if (result.length === 0 || !result[0].last_post) return reject("Items not found in the database");
                 resolve(JSON.parse(result[0].last_post));
             });
         });
 
-        const uploadImage = (file) => ik.upload({
-            file: file.buffer,
-            fileName: file.originalname,
-        }).then(response => response.url);
-
         let updatedItems = await getCurrentItemsFromDB();
 
-        if (req.files) {
-            if (req.files['image_1'] && req.files['image_1'][0]) {
-                updatedItems[0].imageurl = await uploadImage(req.files['image_1'][0]);
-            }
-            if (req.files['image_2'] && req.files['image_2'][0]) {
-                updatedItems[1].imageurl = await uploadImage(req.files['image_2'][0]);
-            }
-            if (req.files['image_3'] && req.files['image_3'][0]) {
-                updatedItems[2].imageurl = await uploadImage(req.files['image_3'][0]);
-            }
-        }
-
+        updatedItems[0].imageurl = imageFile_1 ? await file.uploadFile(imageFile_1) : await updatedItems[0].imageurl
+        updatedItems[1].imageurl = imageFile_2 ? await file.uploadFile(imageFile_2) : await updatedItems[1].imageurl
+        updatedItems[2].imageurl = imageFile_3 ? await file.uploadFile(imageFile_3) : await updatedItems[2].imageurl
+        
+        // Update last_post object
         updatedItems[0] = { ...updatedItems[0], title: title_1, description: description_1, year: year_1, brand: brand_1 };
         updatedItems[1] = { ...updatedItems[1], title: title_2, description: description_2, year: year_2, brand: brand_2 };
         updatedItems[2] = { ...updatedItems[2], title: title_3, description: description_3, year: year_3, brand: brand_3 };
 
         const itemsArrayJson = JSON.stringify(updatedItems);
         const sql = "UPDATE youtube_data SET total_subscribers = ?, total_views = ?, last_post = ? WHERE id = ?";
-        const values = [subscribers, views, itemsArrayJson, igDataId];
+        const values = [subscribers, views, itemsArrayJson, youtubeDataId];
 
         db.query(sql, values, (error, result) => {
             if (error) {
@@ -265,7 +214,7 @@ const putyoutube_data = async (req, res) => {
                 return res.status(500).json({ message: "Error updating youtube_data", error });
             }
             if (result.affectedRows === 0) {
-                return res.status(404).json({ message: "ig data not found" });
+                return res.status(404).json({ message: "YouTube data not found" });
             }
             res.json({ message: "Updated" });
         });

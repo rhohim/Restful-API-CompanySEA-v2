@@ -33,9 +33,7 @@ const getAllintern_contact = (req,res ) => {
 }
 
 const postintern_contact = (req, res) => {
-    // console.log(req.body)
     const {name, university, email, phone} = req.body
-    // console.log(name,color);
     const sql = "INSERT INTO intern_contact ( contact_name, university, email, phone) VALUES (?, ?, ?, ?)"
     const value = [name, university, email, phone]
     db.query(sql, value, (error, result) => {
@@ -58,7 +56,7 @@ const deleteintern_contact = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting intern_contact:", error);
+            // console.error("Error deleting intern_contact:", error);
             res.status(500).json({
                 message: "Error deleting intern_contact",
                 error: error
@@ -68,7 +66,7 @@ const deleteintern_contact = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE intern_contact AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -90,28 +88,28 @@ const putintern_contact = (req, res) => {
     university = req.body.university
     email = req.body.email,
     phone = req.body.phone
-    console.log(contact_name, university);
+    // console.log(contact_name, university);
     const fetchSql = 'SELECT contact_name, university, email, phone FROM intern_contact WHERE id = ?';
     db.query(fetchSql, [id], (fetchError, fetchResult) => {
         if (fetchError) {
-            console.error("Error fetching user details:", fetchError);
+            // console.error("Error fetching user details:", fetchError);
             res.status(500).json({
                 message: "Error fetching user details",
                 error: fetchError
             });
         } else {
             const existingValues = fetchResult[0];
-            console.log(existingValues);
+            // console.log(existingValues);
             updateContact_name = contact_name !== undefined ? contact_name : existingValues.contact_name;
             updateUniversity = university !== undefined ? university : existingValues.university;
             updateEmail = email !== undefined ? email : existingValues.email;
             updatePhone = phone !== undefined ? phone : existingValues.phone;
             const sql = "UPDATE intern_contact SET contact_name = ?, university = ?, email = ?, phone = ? WHERE id = ?"
-            console.log(updateContact_name, updateUniversity);
+            // console.log(updateContact_name, updateUniversity);
             const value = [updateContact_name,updateUniversity, updateEmail,updatePhone, id]
             db.query(sql, value, (error, result) => {
                 if (error) {
-                    console.error("Error updating intern_contact:", error);
+                    // console.error("Error updating intern_contact:", error);
                     res.status(500).json({
                         message: "Error updating intern_contact",
                         error: error
@@ -169,7 +167,7 @@ const deleteintern_contactbyID = (req,res) => {
 
     db.query(sql, [deleteintern_contactID], (error, result) => {
         if (error) {
-            console.error("Error deleting intern_contact:", error);
+            // console.error("Error deleting intern_contact:", error);
             res.status(500).json({
                 message: "Error deleting intern_contact", 
                 error: error

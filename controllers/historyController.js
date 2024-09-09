@@ -1,10 +1,6 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  }); 
+const file = require("../config/filehandling")
+
 
 const getAllhistory = (req,res ) => {
     const sql = "SELECT * FROM history"
@@ -42,39 +38,13 @@ const getAllhistory = (req,res ) => {
 
 const posthistory = async (req, res) => {
     try{
-        let imageURL = "";
-        let bgimageURL = "";
+        const {title, date, description,background_color} = req.body
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        const bgimageFile = req.files && req.files['background_image'] && req.files['background_image'][0]
+        let imageURL, bgimageURL 
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
+        bgimageURL = bgimageFile ? await file.uploadFile(bgimageFile) : ''
 
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
-
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-
-            imageURL = imageUploadResponse.url;
-        }
-
-        if (req.files && req.files['background_image'] && req.files['background_image'][0]) {
-            const background_imageFile = req.files['background_image'][0];
-
-            const background_imageUploadResponse = await ik.upload({
-                file: background_imageFile.buffer,
-                fileName: background_imageFile.originalname,
-            });
-
-            bgimageURL = background_imageUploadResponse.url;
-        }
-
-        const title = req.body.title
-        const date = req.body.date
-        const description = req.body.description
-        const background_color = req.body.background_color
-
-
-
-        // console.log(imageURL, " ", title)
         const sql = "INSERT INTO history ( title, date, description,background_color, image, background_image) VALUES ( ?, ?, ?, ?, ?, ?)"
         const value = [title, date, description,background_color, imageURL, bgimageURL]
 
@@ -102,7 +72,7 @@ const deletehistory = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting history:", error);
+            // console.error("Error deleting history:", error);
             res.status(500).json({
                 message: "Error deleting history",
                 error: error
@@ -112,7 +82,7 @@ const deletehistory = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE history AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -132,7 +102,7 @@ const gethistorybyID = (req, res) => {
     const sql = "SELECT * FROM history WHERE id = ?"
     db.query(sql, [historyId], (error, result) => {
         if (error) {
-            console.error("Error fetching history:", error);
+            // console.error("Error fetching history:", error);
             res.status(500).json({
                 message: "Error fetching history",
                 error: error
@@ -167,7 +137,7 @@ const deletehistorybyID = (req, res) => {
 
     db.query(sql, [historyId], (error, result) => {
         if (error) {
-            console.error("Error deleting history:", error);
+            // console.error("Error deleting history:", error);
             res.status(500).json({
                 message: "Error deleting history",
                 error: error
@@ -186,15 +156,14 @@ const deletehistorybyID = (req, res) => {
     });
 }
 
-
 const puthistory = async (req, res) => {
     const historyId = req.params.id;
     const { title, date, description, background_color } = req.body;
-    let imageURL, background_imageURL;
+    let imageURL, background_imageURL
+    const imageFile = req.files && req.files['image'] && req.files['image'][0] 
+    const bgimageFile = req.files && req.files['background_image'] && req.files['background_image'][0]
 
     try {
-        const imageFile = req.files['image'] ? req.files['image'][0] : null;
-        const bgimageFile = req.files['background_image'] ? req.files['background_image'][0] : null;
 
         const getImageURLFromDB = () => new Promise((resolve, reject) => {
             db.query('SELECT image FROM history WHERE id = ?', [historyId], (error, result) => {
@@ -212,20 +181,15 @@ const puthistory = async (req, res) => {
             });
         });
 
-        const uploadImage = (file) => ik.upload({
-            file: file.buffer,
-            fileName: file.originalname,
-        }).then(response => response.url);
-
-        imageURL = imageFile ? await uploadImage(imageFile) : await getImageURLFromDB();
-        background_imageURL = bgimageFile ? await uploadImage(bgimageFile) : await getBgImageURLFromDB();
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getImageURLFromDB();
+        background_imageURL = bgimageFile ? await file.uploadFile(bgimageFile) : await getBgImageURLFromDB();
 
         const sql = "UPDATE history SET title = ?, date = ?, description = ?, background_color = ?, image = ?, background_image = ? WHERE id = ?";
         const values = [title, date, description, background_color, imageURL, background_imageURL, historyId];
 
         db.query(sql, values, (error, result) => {
             if (error) {
-                console.error("Error updating history:", error);
+                // console.error("Error updating history:", error);
                 return res.status(500).json({ message: "Error updating history", error });
             }
             if (result.affectedRows === 0) {
@@ -234,7 +198,7 @@ const puthistory = async (req, res) => {
             res.json({ message: "Updated" });
         });
     } catch (err) {
-        console.error("An error occurred:", err);
+        // console.error("An error occurred:", err);
         res.status(500).json({ message: "An error occurred", error: err.message });
     }
 };

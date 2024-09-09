@@ -1,10 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
 
 
 const getAllig_data = (req,res ) => {
@@ -49,41 +44,14 @@ const getAllig_data = (req,res ) => {
 const postig_data = async (req,res) => {
     try {
         let imageURL1,imageURL2,imageURL3
+        const imageFile1 = req.files && req.files['image_1'] && req.files['image_1'][0]
+        const imageFile2 = req.files && req.files['image_2'] && req.files['image_2'][0]
+        const imageFile3 = req.files && req.files['image_3'] && req.files['image_3'][0]
 
-        if (req.files && req.files['image_1'] && req.files['image_1'][0]) {
-            const image_1File = req.files['image_1'][0];
+        imageURL1 = imageFile1 ? await file.uploadFile(imageFile1) : ''
+        imageURL2 = imageFile2 ? await file.uploadFile(imageFile2) : ''
+        imageURL3 = imageFile3 ? await file.uploadFile(imageFile3) : ''
 
-            const image_1UploadResponse = await ik.upload({
-                file: image_1File.buffer,
-                fileName: image_1File.originalname,
-            });
-
-            imageURL1 = image_1UploadResponse.url;
-        }
-
-        if (req.files && req.files['image_2'] && req.files['image_2'][0]) {
-            const image_2File = req.files['image_2'][0];
-
-            const image_2UploadResponse = await ik.upload({
-                file: image_2File.buffer,
-                fileName: image_2File.originalname,
-            });
-
-            imageURL2 = image_2UploadResponse.url;
-        }
-
-        if (req.files && req.files['image_3'] && req.files['image_3'][0]) {
-            const image_3File = req.files['image_3'][0];
-
-            const image_3UploadResponse = await ik.upload({
-                file: image_3File.buffer,
-                fileName: image_3File.originalname,
-            });
-
-            imageURL3 = image_3UploadResponse.url;
-        }
-
-        
         const { followers, er, title_1, description_1, year_1, brand_1, title_2, link_1, description_2, year_2, brand_2, link_2, title_3, description_3, year_3, brand_3, link_3 } = req.body;
         let itemsArray = [
             { title: title_1, description: description_1, year: year_1, brand: brand_1, imageurl: imageURL1, link : link_1 },
@@ -213,6 +181,9 @@ const deleteig_databyID = (req, res) => {
 const putig_data = async (req, res) => {
     const igDataId = req.params.id;
     const { followers, er, title_1, description_1, year_1, brand_1, link_1, title_2, description_2, year_2, brand_2, link_2, title_3, description_3, year_3, brand_3, link_3 } = req.body;
+    const imageFile1 = req.files && req.files['image_1'] && req.files['image_1'][0]
+    const imageFile2 = req.files && req.files['image_2'] && req.files['image_2'][0]
+    const imageFile3 = req.files && req.files['image_3'] && req.files['image_3'][0]
 
     try {
         const getCurrentItemsFromDB = () => new Promise((resolve, reject) => {
@@ -222,26 +193,12 @@ const putig_data = async (req, res) => {
                 resolve(JSON.parse(result[0].last_post));
             });
         });
-
-        const uploadImage = (file) => ik.upload({
-            file: file.buffer,
-            fileName: file.originalname,
-        }).then(response => response.url);
-
         let updatedItems = await getCurrentItemsFromDB();
 
-        if (req.files) {
-            if (req.files['image_1'] && req.files['image_1'][0]) {
-                updatedItems[0].imageurl = await uploadImage(req.files['image_1'][0]);
-            }
-            if (req.files['image_2'] && req.files['image_2'][0]) {
-                updatedItems[1].imageurl = await uploadImage(req.files['image_2'][0]);
-            }
-            if (req.files['image_3'] && req.files['image_3'][0]) {
-                updatedItems[2].imageurl = await uploadImage(req.files['image_3'][0]);
-            }
-        }
-
+        updatedItems[0].imageurl = imageFile1 ? await file.uploadFile(imageFile1) : await updatedItems[0].imageurl
+        updatedItems[1].imageurl = imageFile2 ? await file.uploadFile(imageFile2) : await updatedItems[1].imageurl
+        updatedItems[2].imageurl = imageFile3 ? await file.uploadFile(imageFile3) : await updatedItems[2].imageurl
+        
         updatedItems[0] = { ...updatedItems[0], title: title_1, description: description_1, year: year_1, brand: brand_1, link : link_1 };
         updatedItems[1] = { ...updatedItems[1], title: title_2, description: description_2, year: year_2, brand: brand_2, link : link_2 };
         updatedItems[2] = { ...updatedItems[2], title: title_3, description: description_3, year: year_3, brand: brand_3, link : link_3 };

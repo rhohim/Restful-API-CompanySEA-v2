@@ -1,10 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  }); 
+const file = require("../config/filehandling")
 
 const getAllAgency = (req, res) => {
     const sql = "SELECT * FROM agency";
@@ -51,36 +46,13 @@ const getAllAgency = (req, res) => {
 
 const postAgency = async (req, res) => {
     try {
-        let photoProfileURL = "";
-        let postImageURL = "";
+        let photoProfileURL, postImageURL
+        const photoProfileFile = req.files && req.files['photo_profile'] && req.files['photo_profile'][0]
+        const postImageFile = req.files && req.files['image_post'] && req.files['image_post'][0]
+        photoProfileURL = photoProfileFile ? await file.uploadFile(photoProfileFile) : ''
+        postImageURL = postImageFile ? await file.uploadFile(postImageFile) : ''
 
-        if (req.files && req.files['photo_profile'] && req.files['photo_profile'][0]) {
-            const photoProfileFile = req.files['photo_profile'][0];
-
-            const photoProfileUploadResponse = await ik.upload({
-                file: photoProfileFile.buffer,
-                fileName: photoProfileFile.originalname,
-            });
-
-            photoProfileURL = photoProfileUploadResponse.url;
-        }
-
-        if (req.files && req.files['image_post'] && req.files['image_post'][0]) {
-            const postImageFile = req.files['image_post'][0];
-
-            const postImageUploadResponse = await ik.upload({
-                file: postImageFile.buffer,
-                fileName: postImageFile.originalname,
-            });
-
-            postImageURL = postImageUploadResponse.url;
-        }
-
-        const username = req.body.username;
-        const likes = req.body.likes;
-        const caption = req.body.caption;
-        const link = req.body.link
-
+        const {username, likes, caption, link} = req.body
         const sql = "INSERT INTO agency (photo_profile, username, image_post, likes, caption, link) VALUES (?, ?, ?, ?, ?, ?)";
         const values = [photoProfileURL, username, postImageURL, likes, caption, link];
 
@@ -98,6 +70,7 @@ const postAgency = async (req, res) => {
             }
         });
     } catch (error) {
+        // console.log(error);
         res.status(500).send({ error: 'Internal Server Error' });
     }
 };
@@ -107,7 +80,7 @@ const deleteAllAgency = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting agency data:", error);
+            // console.error("Error deleting agency data:", error);
             res.status(500).json({
                 message: "Error deleting agency data",
                 error: error
@@ -116,7 +89,7 @@ const deleteAllAgency = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE agency AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -136,7 +109,7 @@ const getAgencyByID = (req, res) => {
     const sql = "SELECT * FROM agency WHERE id = ?";
     db.query(sql, [agencyId], (error, result) => {
         if (error) {
-            console.error("Error fetching agency data:", error);
+            // console.error("Error fetching agency data:", error);
             res.status(500).json({
                 message: "Error fetching agency data",
                 error: error
@@ -171,7 +144,7 @@ const deleteAgencyByID = (req, res) => {
 
     db.query(sql, [agencyId], (error, result) => {
         if (error) {
-            console.error("Error deleting agency data:", error);
+            // console.error("Error deleting agency data:", error);
             res.status(500).json({
                 message: "Error deleting agency data",
                 error: error
@@ -194,11 +167,11 @@ const putAgency = async (req, res) => {
     const agencyId = req.params.id;
     const { username, likes, caption , link} = req.body;
     let photoProfileURL, postImageURL;
+    const photoProfileFile = req.files && req.files['photo_profile'] && req.files['photo_profile'][0]
+    const postImageFile = req.files && req.files['image_post'] && req.files['image_post'][0]
 
     try {
-        const photoProfileFile = req.files['photo_profile'] ? req.files['photo_profile'][0] : null;
-        const postImageFile = req.files['image_post'] ? req.files['image_post'][0] : null;
-
+        
         const getPhotoProfileURLFromDB = () => new Promise((resolve, reject) => {
             db.query('SELECT photo_profile FROM agency WHERE id = ?', [agencyId], (error, result) => {
                 if (error) return reject("Error fetching agency photo profile: " + error);
@@ -215,20 +188,14 @@ const putAgency = async (req, res) => {
             });
         });
 
-        const uploadImage = (file) => ik.upload({
-            file: file.buffer,
-            fileName: file.originalname,
-        }).then(response => response.url);
-
-        photoProfileURL = photoProfileFile ? await uploadImage(photoProfileFile) : await getPhotoProfileURLFromDB();
-        postImageURL = postImageFile ? await uploadImage(postImageFile) : await getPostImageURLFromDB();
+        photoProfileURL = photoProfileFile ? await file.uploadFile(photoProfileFile) : await getPhotoProfileURLFromDB();
+        postImageURL = postImageFile ? await file.uploadFile(postImageFile) : await getPostImageURLFromDB();
 
         const sql = "UPDATE agency SET photo_profile = ?, username = ?, image_post = ?, likes = ?, caption = ?, link = ? WHERE id = ?";
         const values = [photoProfileURL, username, postImageURL, likes, caption, link, agencyId];
 
         db.query(sql, values, (error, result) => {
             if (error) {
-                console.error("Error updating agency data:", error);
                 return res.status(500).json({ message: "Error updating agency data", error });
             }
             if (result.affectedRows === 0) {
@@ -237,7 +204,6 @@ const putAgency = async (req, res) => {
             res.json({ message: "Updated" });
         });
     } catch (err) {
-        console.error("An error occurred:", err);
         res.status(500).json({ message: "An error occurred", error: err.message });
     }
 };

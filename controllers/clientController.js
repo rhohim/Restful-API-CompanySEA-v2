@@ -1,10 +1,6 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
+
   
 const getAllclient = (req,res ) => {
     const baseSQL = "SELECT * FROM client";
@@ -76,19 +72,9 @@ const getAllclient = (req,res ) => {
 
 const postclient = async (req, res) => {
     try{
-        let logoURL = "";
-
-        if (req.files && req.files['logo'] && req.files['logo'][0]) {
-            const logoFile = req.files['logo'][0];
-
-            const logoUploadResponse = await ik.upload({
-                file: logoFile.buffer,
-                fileName: logoFile.originalname,
-            });
-
-            logoURL = logoUploadResponse.url;
-        }
-
+        let logoURL;
+        const logoFile = req.files && req.files['logo'] && req.files['logo'][0]
+        logoURL = logoFile ? await file.uploadFile(logoFile) : ''
         const clientname = req.body.name
         // console.log(logoURL, " ", clientname)
         const sql = "INSERT INTO client ( client_name, logo) VALUES (?, ?)"
@@ -118,7 +104,7 @@ const deleteclient = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting client:", error);
+            // console.error("Error deleting client:", error);
             res.status(500).json({
                 message: "Error deleting client",
                 error: error
@@ -128,7 +114,7 @@ const deleteclient = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE client AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -145,49 +131,29 @@ const deleteclient = (req, res) => {
 
 const putclient = async (req, res) => {
     const clientId = req.params.id
+    const clientname = req.body.name;
+    const logoFile = req.files && req.files['logo'] && req.files['logo'][0]
     let logoURL
     try {
-        const logoFile = req.files['logo'];
-        const clientname = req.body.name;
-
-        if (!logoFile) {
+        const getLogoURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT logo FROM client WHERE id = ?';
             db.query(sqlSelectImage, [clientId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching client image:", error);
-                    res.status(500).json({
-                        message: "Error fetching client image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].logo) {
-                        res.status(404).json({
-                            message: "client image not found in the database"
-                        });
-                    } else {
-                        logoURL = result[0].logo;
-                        // Proceed to update the client
-                        updateclient();
-                    }
-                }
+                if (error) return reject("Error fetching client image: " + error);
+                if (result.length === 0 || !result[0].logo) return reject("Client image not found in the database");
+                resolve(result[0].logo);
             });
-        } else {
-            const logoFile = req.files['logo'][0];     
-            const clientImageUploadResponse = await ik.upload({
-                file: logoFile.buffer,
-                fileName: logoFile.originalname,
-            });
-            logoURL = clientImageUploadResponse.url;
-            // Proceed to update the client
-            updateclient();
-        }
+        });
+
+        logoURL = logoFile ? await file.uploadFile(logoFile) : await getLogoURLFromDB()
+        updateclient()
 
         function updateclient(){
+            // console.log(clientname, logoURL, clientId);
             const sql = "UPDATE client SET client_name = ?, logo = ? WHERE id = ?"
             const value = [clientname, logoURL, clientId]
             db.query(sql, value, (error, result) => {
                 if (error) {
-                    console.error("Error updating client:", error);
+                    // console.error("Error updating client:", error);
                     res.status(500).json({
                         message: "Error updating client", 
                         error: error
@@ -206,7 +172,7 @@ const putclient = async (req, res) => {
             });
         }
     } catch(err) {
-        console.error("An error occurred:", err);
+        // console.error("An error occurred:", err);
         res.status(500).json({
             message: "An error occurred",
             error: err.message
@@ -220,7 +186,7 @@ const getclientbyID = (req, res) => {
     const sql = "SELECT * FROM client WHERE id = ?"
     db.query(sql, [clientId], (error, result) => {
         if (error) {
-            console.error("Error fetching client:", error);
+            // console.error("Error fetching client:", error);
             res.status(500).json({
                 message: "Error fetching client",
                 error: error
@@ -251,7 +217,7 @@ const deleteclientbyID = (req, res) => {
 
     db.query(sql, [clientId], (error, result) => {
         if (error) {
-            console.error("Error deleting client:", error);
+            // console.error("Error deleting client:", error);
             res.status(500).json({
                 message: "Error deleting client",
                 error: error

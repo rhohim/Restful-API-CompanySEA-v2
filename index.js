@@ -13,7 +13,7 @@ app.use(bodyparser.json())
 const middleAuth = require('./config/auth')
 
 
-const categoryRoute = require("./routers/category")
+// const categoryRoute = require("./routers/category")
 const clientRoute = require("./routers/client")
 const servicesRoute = require("./routers/services")
 const portofolioRoute = require("./routers/portofolio") 
@@ -34,7 +34,7 @@ const internbatchRoute = require("./routers/internbatch")
 const internmemberRoute = require("./routers/internmember")
 const intercontactRoute = require("./routers/interncontact")
 
-app.use('/api/v1/company/category', categoryRoute)
+// app.use('/api/v1/company/category', categoryRoute)
 app.use('/api/v1/company/client', clientRoute)
 app.use('/api/v1/company/portfolio', portofolioRoute)
 app.use('/api/v1/company/services', servicesRoute)

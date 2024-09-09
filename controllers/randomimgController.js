@@ -1,10 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  }); 
+const file = require("../config/filehandling") 
 
 const getAllrandom_img = (req,res ) => {
     const sql = "SELECT * FROM random_img"
@@ -39,19 +34,9 @@ const getAllrandom_img = (req,res ) => {
 
 const postrandom_img = async (req, res) => {
     try{
-        let imageURL = "";
-
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
-
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-
-            imageURL = imageUploadResponse.url;
-        }
-
+        let imageURL
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
         const alt_image = req.body.alt_image
         const sql = "INSERT INTO random_img ( image, alt_image) VALUES ( ?, ?)"
         const value = [imageURL, alt_image]
@@ -164,42 +149,19 @@ const deleterandom_imgbyID = (req, res) => {
 const putrandom_img = async (req, res) => {
     const random_imgId = req.params.id
     let imageURL
+    const imageFile = req.files && req.files['image'] && req.files['image'][0]
+    const alt_image = req.body.alt_image;
     try {
-        const imageFile = req.files['image'];
-        const alt_image = req.body.alt_image;
-
-        if (!imageFile) {
+        const getrandomimgURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT image FROM random_img WHERE id = ?';
             db.query(sqlSelectImage, [random_imgId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching random_img image:", error);
-                    res.status(500).json({
-                        message: "Error fetching random_img image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].image) {
-                        res.status(404).json({
-                            message: "random_img image not found in the database"
-                        });
-                    } else {
-                        imageURL = result[0].image;
-                        // Proceed to update the random_img
-                        updaterandom_img();
-                    }
-                }
-            });
-        } else {
-            const imageFile = req.files['image'][0];     
-            const random_imgImageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-            imageURL = random_imgImageUploadResponse.url;
-            // Proceed to update the random_img
-            updaterandom_img();
-        }
-
+                if (error) return reject("Error fetching image" + error)
+                if (result.length === 0 || !result[0].image) return reject("image not found in the database")
+                resolve(result[0].image)
+            })
+        })
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getrandomimgURLFromDB()
+        updaterandom_img()
         function updaterandom_img(){
             const sql = "UPDATE random_img SET image = ? , alt_image = ? WHERE id = ?"
             const value = [imageURL, alt_image, random_imgId]

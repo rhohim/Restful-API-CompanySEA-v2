@@ -1,10 +1,6 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
+
 
 const getAllintern_member = (req,res ) => {
     const sql = `
@@ -51,19 +47,10 @@ const getAllintern_member = (req,res ) => {
 
 const postintern_member = async (req, res) => {
     try{
-        let imageURL = "";
-
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
-
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-
-            imageURL = imageUploadResponse.url;
-        }
-
+        let imageURL 
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
+        
         const { member_name, university, division, instagram, batch_id } = req.body;
         // console.log(imageURL, " ", internname)
         const sql = "INSERT INTO intern_member ( member_name, university, division, instagram, image, batch_id) VALUES (?,?,?,?,?,?)"
@@ -187,68 +174,32 @@ const deleteintern_memberbyID = (req, res) => {
 
 const putintern_member = async (req, res) => {
     const internId = req.params.id
-    let imageURL, batch
+    const { member_name, university, division, instagram, batch_id } = req.body;
+    const imageFile = req.files && req.files['image'] && req.files['image'][0]
+    let imageURL
+
     try {
-        const imageFile = req.files['image'];
-        const { member_name, university, division, instagram } = req.body;
-        batch = req.body.batch_id
-
-        if (!batch){
-            const sqlSelectbatch = 'SELECT batch_id FROM intern_member WHERE id = ?';
-            db.query(sqlSelectbatch, [internId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching intern_member batch:", error);
-                    res.status(500).json({
-                        message: "Error fetching intern_member batch",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].batch_id) {
-                        res.status(404).json({
-                            message: "employee batch not found in the database"
-                        });
-                    } else {
-                        batch = result[0].batch_id;
-                        // Proceed to update the client
-                        // updateclient();
-                    }
-                }
-            });
-        }
-
-        if (!imageFile) {
+        const getbatchIDFromDB = () => new Promise((resolve, reject) => {
+            const sqlSelectImage = 'SELECT batch_id FROM intern_member WHERE id = ?';
+            db.query(sqlSelectImage, [internId], (error, result) => {
+                if (error) return reject("Error fetching intern_member department" + error)
+                if (result.length === 0 || !result[0].batch_id) return reject("intern_member department not found in the database")
+                resolve(result[0].batch_id)
+            })
+        })
+        
+        const getEmployeeURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT image FROM intern_member WHERE id = ?';
             db.query(sqlSelectImage, [internId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching intern_member image:", error);
-                    res.status(500).json({
-                        message: "Error fetching intern_member image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].image) {
-                        res.status(404).json({
-                            message: "intern_member image not found in the database"
-                        });
-                    } else {
-                        imageURL = result[0].image;
-                        // Proceed to update the intern
-                        updateintern();
-                    }
-                }
-            });
-        } else {
-            const imageFile = req.files['image'][0];     
-            const internImageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-            imageURL = internImageUploadResponse.url;
-            // Proceed to update the intern
-            updateintern();
-        }
+                if (error) return reject("Error fetching intern_member image" + error)
+                if (result.length === 0 || !result[0].image) return reject("intern_member image not found in the database")
+                resolve(result[0].image)
+            })
+        })
 
-        
+        const batch = batch_id || await getbatchIDFromDB()
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getEmployeeURLFromDB()
+        updateintern()
 
         function updateintern(){
             const sql = "UPDATE intern_member SET member_name = ? , university = ?, division = ?, instagram = ?, image = ?, batch_id = ? WHERE id = ?"

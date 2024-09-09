@@ -1,10 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
 
 const getAllservices = (req,res ) => {
     const sql = `
@@ -95,24 +90,13 @@ const getAllservices = (req,res ) => {
 
 const postservices = async (req, res) => {
     try{
-        let coverURL = "";
-
-        if (req.files && req.files['cover'] && req.files['cover'][0]) {
-            const coverFile = req.files['cover'][0];
-
-            const coverUploadResponse = await ik.upload({
-                file: coverFile.buffer,
-                fileName: coverFile.originalname,
-            });
-
-            coverURL = coverUploadResponse.url;
-        }
-
-        const servicesname = req.body.name
-        const desc = req.body.short_description
-        console.log(coverURL, " ", servicesname)
+        let coverURL
+        const coverFile = req.files && req.files['cover'] && req.files['cover'][0]
+        coverURL = coverFile ? await file.uploadFile(coverFile) : ''
+        const {name, short_description} = req.body
+        
         const sql = "INSERT INTO services ( services_name, cover, short_description) VALUES (?, ?, ?)"
-        const value = [servicesname, coverURL, desc]
+        const value = [name, coverURL, short_description]
 
         db.query(sql, value, (error, result) => {
             if (error) {
@@ -273,46 +257,22 @@ const deleteservicesbyID = (req, res) => {
 const putservices = async (req, res) => {
     const servicesId = req.params.id
     let coverURL
+    const coverFile = req.files && req.files['cover'] && req.files['cover'][0]
+    const {name, short_description} = req.body
     try {
-        const coverFile = req.files['cover'];
-        const servicesname = req.body.name;
-        const desc = req.body.short_description
-
-        if (!coverFile) {
+        const getservicesURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT cover FROM services WHERE id = ?';
             db.query(sqlSelectImage, [servicesId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching services image:", error);
-                    res.status(500).json({
-                        message: "Error fetching services image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].cover) {
-                        res.status(404).json({
-                            message: "services image not found in the database"
-                        });
-                    } else {
-                        coverURL = result[0].cover;
-                        // Proceed to update the services
-                        updateservices();
-                    }
-                }
-            });
-        } else {
-            const coverFile = req.files['cover'][0];     
-            const servicesImageUploadResponse = await ik.upload({
-                file: coverFile.buffer,
-                fileName: coverFile.originalname,
-            });
-            coverURL = servicesImageUploadResponse.url;
-            // Proceed to update the services
-            updateservices();
-        }
-
+                if (error) return reject("Error fetching services cover" + error)
+                if (result.length === 0 || !result[0].cover) return reject("services cover not found in the database")
+                resolve(result[0].cover)
+            })
+        })
+        coverURL = coverFile ? await file.uploadFile(coverFile) : await getservicesURLFromDB()
+        updateservices()
         function updateservices(){
             const sql = "UPDATE services SET services_name = ?, cover = ? , short_description = ? WHERE id = ?"
-            const value = [servicesname, coverURL, desc, servicesId]
+            const value = [name, coverURL, short_description, servicesId]
             db.query(sql, value, (error, result) => {
                 if (error) {
                     console.error("Error updating services:", error);

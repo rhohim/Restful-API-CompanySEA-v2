@@ -1,10 +1,6 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({  
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
+
  
 const getAllemployee = (req,res ) => {
     const baseSQL = `
@@ -86,25 +82,13 @@ const getAllemployee = (req,res ) => {
 
 const postemployee = async (req, res) => {
     try{
-        let imageURL = "";
-
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
-
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-
-            imageURL = imageUploadResponse.url;
-        }
-
-        const employeename = req.body.name
-        const role = req.body.role
-        const iddivision = req.body.department_id
+        let imageURL;
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
+        const {name, role, department_id} = req.body
         // console.log(imageURL, " ", employeename)
         const sql = "INSERT INTO employee ( employee_name, image, role, division_id) VALUES (?,?,?,?)"
-        const value = [employeename,imageURL,role,iddivision]
+        const value = [name,imageURL,role,department_id]
 
         db.query(sql, value, (error, result) => {
             if (error) {
@@ -130,7 +114,7 @@ const deleteemployee = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting employee:", error);
+            // console.error("Error deleting employee:", error);
             res.status(500).json({
                 message: "Error deleting employee",
                 error: error
@@ -140,7 +124,7 @@ const deleteemployee = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE employee AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -157,7 +141,7 @@ const deleteemployee = (req, res) => {
 
 const getemployeebyID = (req,res ) => {
     const employeeId = req.params.id
-    console.log(req.query.name);
+    // console.log(req.query.name);
     const sql = "SELECT e.*, d.id as divsion_id, d.division_name FROM employee e LEFT JOIN division d ON e.division_id = d.id where e.id = ?"
     db.query(sql,[employeeId], (error, result) => {
         if (error) {
@@ -195,7 +179,7 @@ const deleteemployeebyID = (req, res) => {
 
     db.query(sql, [employeeId], (error, result) => {
         if (error) {
-            console.error("Error deleting employee:", error);
+            // console.error("Error deleting employee:", error);
             res.status(500).json({
                 message: "Error deleting employee",
                 error: error
@@ -216,75 +200,39 @@ const deleteemployeebyID = (req, res) => {
 
 const putemployeebyID = async (req,res) => {
     const employeeId = req.params.id
-    let imageURL, division
+    const {name, role, department_id} = req.body
+    const imageFile = req.files && req.files['image'] && req.files['image'][0]
+    let imageURL
     try {
-        const imageFile = req.files["image"]
-        const employeename = req.body.name
-        const role = req.body.role
-        division = req.body.department_id
-        // console.log("input ",division);
 
-        if (!division){
-            const sqlSelectdivision = 'SELECT division_id FROM employee WHERE id = ?';
-            db.query(sqlSelectdivision, [employeeId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching employee division:", error);
-                    res.status(500).json({
-                        message: "Error fetching employee division",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].division_id) {
-                        res.status(404).json({
-                            message: "employee division not found in the database"
-                        });
-                    } else {
-                        division = result[0].division_id;
-                        // Proceed to update the client
-                        // updateclient();
-                    }
-                }
-            });
-        }
+        const getDivisionIDFromDB = () => new Promise((resolve, reject) => {
+            const sqlSelectImage = 'SELECT division_id FROM employee WHERE id = ?';
+            db.query(sqlSelectImage, [employeeId], (error, result) => {
+                if (error) return reject("Error fetching employee department" + error)
+                if (result.length === 0 || !result[0].division_id) return reject("employee department not found in the database")
+                resolve(result[0].division_id)
+            })
+        })
 
-        if (!imageFile) {
+        const getEmployeeURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT image FROM employee WHERE id = ?';
             db.query(sqlSelectImage, [employeeId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching employee image:", error);
-                    res.status(500).json({
-                        message: "Error fetching employee image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].image) {
-                        res.status(404).json({
-                            message: "employee image not found in the database"
-                        });
-                    } else {
-                        imageURL = result[0].image;
-                        // Proceed to update the employee
-                        updateemployee();
-                    }
-                }
-            });
-        } else {
-            const imageFile = req.files['image'][0];     
-            const employeeImageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-            imageURL = employeeImageUploadResponse.url;
-            // Proceed to update the employee
-            updateemployee();
-        }
+                if (error) return reject("Error fetching employee image" + error)
+                if (result.length === 0 || !result[0].image) return reject("employee image not found in the database")
+                resolve(result[0].image)
+            })
+        })
+        
+        const division = department_id || await getDivisionIDFromDB()
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getEmployeeURLFromDB()
+        updateemployee()
 
         function updateemployee(){
             const sql = "UPDATE employee SET employee_name = ?, role = ? , image = ?, division_id = ? WHERE id = ? "
-            const value = [ employeename, role, imageURL, division, employeeId]
+            const value = [ name, role, imageURL, division, employeeId]
             db.query(sql, value, (error, result) => {
                 if(error){
-                    console.log("error updating client", error)
+                    // console.log("error updating client", error)
                     res.status(500).json({
                         message: "error updating employee",
                         error : error
@@ -303,7 +251,7 @@ const putemployeebyID = async (req,res) => {
             })
         }
     } catch(err) {
-        console.error("An error occurred:", err);
+        // console.error("An error occurred:", err);
         res.status(500).json({
             message: "An error occurred",
             error: err.message

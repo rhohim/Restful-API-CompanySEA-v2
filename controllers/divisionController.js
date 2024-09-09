@@ -1,10 +1,6 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
+
 
 const getAlldivision = (req,res ) => {
     const sql = `
@@ -74,35 +70,27 @@ const getAlldivision = (req,res ) => {
 
 const postdivision = async (req, res) => {
     try {
-        let imageURL = "";
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
+        let imageURL 
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
+        const {name, description} = req.body
 
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
+        const sql = "INSERT INTO division (division_name, image, description) VALUES (?,?,?)"
+        const value = [name,imageURL, description]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                res.status(500).json({
+                    message: "Error inserting division",
+                    error: error
+                });
+            } else {
+                res.json({
+                    message: "Success",
+                    divisionId: result.insertId
+                });
+            }
+        })
 
-            imageURL = imageUploadResponse.url;
-
-            const {name, description} = req.body
-
-            const sql = "INSERT INTO division (division_name, image, description) VALUES (?,?,?)"
-            const value = [name,imageURL, description]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    res.status(500).json({
-                        message: "Error inserting division",
-                        error: error
-                    });
-                } else {
-                    res.json({
-                        message: "Success",
-                        divisionId: result.insertId
-                    });
-                }
-            })
-        }
     } catch{
         res.status(500).send({ error: 'Internal Server Error' });
     }
@@ -113,7 +101,7 @@ const deletedivision = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting division:", error);
+            // console.error("Error deleting division:", error);
             res.status(500).json({
                 message: "Error deleting division",
                 error: error
@@ -123,7 +111,7 @@ const deletedivision = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE division AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -140,52 +128,28 @@ const deletedivision = (req, res) => {
 
 const putdivision = async (req, res) => {
     const divisionId = req.params.id
-    let nameDivision, imageURL
-    nameDivision = req.body.name
-    description = req.body.description
-    // console.log(nameDivision);
+    const {name, description} = req.body
+    let imageURL
+    const imageFile = req.files && req.files['image'] && req.files['image'][0]   
     try {
-        const imageFile = req.files["image"]
-        const nameDivision = req.body.name
-        
-        if (!imageFile) {
+        const getDivisionURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT image FROM division WHERE id = ?';
             db.query(sqlSelectImage, [divisionId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching division image:", error);
-                    res.status(500).json({
-                        message: "Error fetching division image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].image) {
-                        res.status(404).json({
-                            message: "division image not found in the database"
-                        });
-                    } else {
-                        imageURL = result[0].image;
-                        // Proceed to update the division
-                        updatedivision();
-                    }
-                }
-            });
-        } else {
-            const imageFile = req.files['image'][0];     
-            const divisionImageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-            imageURL = divisionImageUploadResponse.url;
-            // Proceed to update the division
-            updatedivision();
-        }
-
+                if (error) return reject("Error fetching department image" + error)
+                if (result.length === 0 || !result[0].image) return reject("department image not found in the database")
+                resolve(result[0].image)
+            })
+        })
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getDivisionURLFromDB()
+        
+        updatedivision()
+        
         function updatedivision(){
             const sql = "UPDATE division SET division_name = ?, image = ?, description = ? WHERE id = ?"
-            const value = [nameDivision, imageURL, description, divisionId]
+            const value = [name, imageURL, description, divisionId]
             db.query(sql, value, (error, result) => {
                 if (error) {
-                    console.error("Error updating division:", error);
+                    // console.error("Error updating division:", error);
                     res.status(500).json({
                         message: "Error updating division",
                         error: error
@@ -204,7 +168,7 @@ const putdivision = async (req, res) => {
             });
         }
     } catch(err) {
-        console.error("An error occurred:", err);
+        // console.error("An error occurred:", err);
         res.status(500).json({
             message: "An error occurred",
             error: err.message
@@ -287,7 +251,7 @@ const deletedivisionbyID = (req, res) => {
 
     db.query(sql, [divisionId], (error, result) => {
         if (error) {
-            console.error("Error deleting division:", error);
+            // console.error("Error deleting division:", error);
             res.status(500).json({
                 message: "Error deleting division",
                 error: error

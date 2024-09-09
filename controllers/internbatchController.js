@@ -1,10 +1,5 @@
 const db = require("../models/connection")
-const ImageKit = require('imagekit');
-const ik = new ImageKit({ 
-    publicKey: "public_F5lvc2Whw1cbK+bUiWWAaNJ3eRw=",
-    privateKey: "private_4CLfPmDyiaRqCAGxkT4jIiwEc+4=",
-    urlEndpoint: "https://ik.imagekit.io/cretivox"
-  });
+const file = require("../config/filehandling")
 
 const getAllintern_batch = (req, res) => {
     const sql = `
@@ -90,21 +85,11 @@ const getAllintern_batch = (req, res) => {
 
 const postintern_batch = async (req, res) => {
     try{
-        let imageURL = "";
-
-        if (req.files && req.files['image'] && req.files['image'][0]) {
-            const imageFile = req.files['image'][0];
-
-            const imageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-
-            imageURL = imageUploadResponse.url;
-        }
+        let imageURL 
+        const imageFile = req.files && req.files['image'] && req.files['image'][0]
+        imageURL = imageFile ? await file.uploadFile(imageFile) : ''
 
         const { batch, title, best_intern, periode, instagram, philosophy , siapa, reveal, dua_tipe, season} = req.body;
-        // console.log(imageURL, " ", internname)
         const sql = "INSERT INTO intern_batch ( batch, title, best_intern, periode, instagram, philosophy, image, reveal, siapa, dua_tipe, season) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
         const value = [ batch, title, best_intern, periode, instagram, philosophy, imageURL, reveal, siapa, dua_tipe, season]
 
@@ -132,7 +117,7 @@ const deleteintern_batch = (req, res) => {
 
     db.query(sql, (error, result) => {
         if (error) {
-            console.error("Error deleting intern:", error);
+            // console.error("Error deleting intern:", error);
             res.status(500).json({
                 message: "Error deleting intern",
                 error: error
@@ -142,7 +127,7 @@ const deleteintern_batch = (req, res) => {
             const resetAutoIncrement = 'ALTER TABLE intern_batch AUTO_INCREMENT = 1';
             db.query(resetAutoIncrement, (error, result) => {
                 if (error) {
-                    console.error("Error resetting auto-increment counter:", error);
+                    // console.error("Error resetting auto-increment counter:", error);
                     res.status(500).json({
                         message: "Error resetting auto-increment counter",
                         error: error
@@ -160,7 +145,7 @@ const deleteintern_batch = (req, res) => {
 const getintern_batchbyID = (req, res) => {
     const batchId = req.params.id;
     const sql = `
-        SELECT b.*, m.member_name, m.image AS member_image, m.university, m.division, m.instagram 
+        SELECT b.*, m.member_name, m.image AS member_image, m.university, m.division, m.instagram as ig_account
         FROM intern_batch b 
         LEFT JOIN intern_member m 
         ON m.batch_id = b.id
@@ -180,7 +165,6 @@ const getintern_batchbyID = (req, res) => {
                 message: "Intern batch not found"
             });
         }
-
         const intern_batch = {
             id: result[0].id,
             data: {
@@ -221,7 +205,7 @@ const getintern_batchbyID = (req, res) => {
                     image: data.member_image, 
                     university: data.university,
                     division: data.division,
-                    instagram: data.instagram
+                    instagram: data.ig_account
                 });
             }
         });
@@ -239,7 +223,7 @@ const deleteintern_batchbyID = (req, res) => {
 
     db.query(sql, [internId], (error, result) => {
         if (error) {
-            console.error("Error deleting intern:", error);
+            // console.error("Error deleting intern:", error);
             res.status(500).json({
                 message: "Error deleting intern",
                 error: error
@@ -260,49 +244,28 @@ const deleteintern_batchbyID = (req, res) => {
 
 const putintern_batch = async (req, res) => {
     const internId = req.params.id
+    const imageFile = req.files && req.files['image'] && req.files['image'][0]
+    const { batch, title, best_intern, periode, instagram , philosophy, reveal, siapa, dua_tipe,season } = req.body;
     let imageURL
     try {
-        const imageFile = req.files['image'];
-        const { batch, title, best_intern, periode, instagram, philosophy, reveal, siapa, dua_tipe,season } = req.body;
-
-        if (!imageFile) {
+        const getinternbatchURLFromDB = () => new Promise((resolve, reject) => {
             const sqlSelectImage = 'SELECT image FROM intern_batch WHERE id = ?';
             db.query(sqlSelectImage, [internId], (error, result) => {
-                if (error) {
-                    console.error("Error fetching intern_batch image:", error);
-                    res.status(500).json({
-                        message: "Error fetching intern_batch image",
-                        error: error
-                    });
-                } else {
-                    if (result.length === 0 || !result[0].image) {
-                        res.status(404).json({
-                            message: "intern image not found in the database"
-                        });
-                    } else {
-                        imageURL = result[0].image;
-                        // Proceed to update the intern
-                        updateintern();
-                    }
-                }
-            });
-        } else {
-            const imageFile = req.files['image'][0];     
-            const internImageUploadResponse = await ik.upload({
-                file: imageFile.buffer,
-                fileName: imageFile.originalname,
-            });
-            imageURL = internImageUploadResponse.url;
-            // Proceed to update the intern
-            updateintern();
-        }
+                if (error) return reject("Error fetching intern_batch image" + error)
+                if (result.length === 0 || !result[0].image) return reject("intern_batch image not found in the database")
+                resolve(result[0].image)
+            })
+        })
+        imageURL = imageFile ? await file.uploadFile(imageFile) : await getinternbatchURLFromDB()
 
+        updateintern()
         function updateintern(){
+            // console.log(instagram);
             const sql = "UPDATE intern_batch SET batch = ?, title= ?, best_intern= ?, periode= ?, instagram= ?,philosophy= ?, image = ?, reveal = ?, siapa = ?, dua_tipe = ?, season = ? WHERE id = ?"
-            const value = [batch, title, best_intern, periode, instagram,philosophy, imageURL, reveal, siapa, dua_tipe,season, internId]
+            const value = [batch, title, best_intern, periode, instagram ,philosophy, imageURL, reveal, siapa, dua_tipe,season, internId]
             db.query(sql, value, (error, result) => {
                 if (error) {
-                    console.error("Error updating intern_batch:", error);
+                    // console.error("Error updating intern_batch:", error);
                     res.status(500).json({
                         message: "Error updating intern_batch", 
                         error: error
@@ -321,7 +284,7 @@ const putintern_batch = async (req, res) => {
             });
         }
     } catch(err) {
-        console.error("An error occurred:", err);
+        // console.error("An error occurred:", err);
         res.status(500).json({
             message: "An error occurred",
             error: err.message
