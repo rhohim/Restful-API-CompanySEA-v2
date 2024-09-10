@@ -225,31 +225,52 @@ const putemployeebyID = async (req,res) => {
         
         const division = department_id || await getDivisionIDFromDB()
         imageURL = imageFile ? await file.uploadFile(imageFile) : await getEmployeeURLFromDB()
-        updateemployee()
-
-        function updateemployee(){
-            const sql = "UPDATE employee SET employee_name = ?, role = ? , image = ?, division_id = ? WHERE id = ? "
-            const value = [ name, role, imageURL, division, employeeId]
-            db.query(sql, value, (error, result) => {
-                if(error){
-                    // console.log("error updating client", error)
-                    res.status(500).json({
-                        message: "error updating employee",
-                        error : error
+        
+        const sql = "UPDATE employee SET employee_name = ?, role = ? , image = ?, division_id = ? WHERE id = ? "
+        const value = [ name, role, imageURL, division, employeeId]
+        db.query(sql, value, (error, result) => {
+            if(error){
+                // console.log("error updating client", error)
+                res.status(500).json({
+                    message: "error updating employee",
+                    error : error
+                })
+            } else {
+                if (result.length === 0){
+                    res.status(404).json({
+                        message:"employee not found"
                     })
                 } else {
-                    if (result.length === 0){
-                        res.status(404).json({
-                            message:"employee not found"
-                        })
-                    } else {
-                        res.json({
-                            message:"updated"
-                        })
-                    }
+                    res.json({
+                        message:"updated"
+                    })
                 }
-            })
-        }
+            }
+        })
+        // updateemployee()
+        // function updateemployee(){
+        //     const sql = "UPDATE employee SET employee_name = ?, role = ? , image = ?, division_id = ? WHERE id = ? "
+        //     const value = [ name, role, imageURL, division, employeeId]
+        //     db.query(sql, value, (error, result) => {
+        //         if(error){
+        //             // console.log("error updating client", error)
+        //             res.status(500).json({
+        //                 message: "error updating employee",
+        //                 error : error
+        //             })
+        //         } else {
+        //             if (result.length === 0){
+        //                 res.status(404).json({
+        //                     message:"employee not found"
+        //                 })
+        //             } else {
+        //                 res.json({
+        //                     message:"updated"
+        //                 })
+        //             }
+        //         }
+        //     })
+        // }
     } catch(err) {
         // console.error("An error occurred:", err);
         res.status(500).json({

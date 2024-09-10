@@ -142,31 +142,52 @@ const putdivision = async (req, res) => {
         })
         imageURL = imageFile ? await file.uploadFile(imageFile) : await getDivisionURLFromDB()
         
-        updatedivision()
-        
-        function updatedivision(){
-            const sql = "UPDATE division SET division_name = ?, image = ?, description = ? WHERE id = ?"
-            const value = [name, imageURL, description, divisionId]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    // console.error("Error updating division:", error);
-                    res.status(500).json({
-                        message: "Error updating division",
-                        error: error
+        const sql = "UPDATE division SET division_name = ?, image = ?, description = ? WHERE id = ?"
+        const value = [name, imageURL, description, divisionId]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                // console.error("Error updating division:", error);
+                res.status(500).json({
+                    message: "Error updating division",
+                    error: error
+                });
+            } else {
+                if (result.affectedRows === 0) {
+                    res.status(404).json({
+                        message: "division not found"
                     });
                 } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "division not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
+                    res.json({
+                        message: "Updated"
+                    });
                 }
-            });
-        }
+            }
+        });
+
+        // updatedivision()
+        // function updatedivision(){
+        //     const sql = "UPDATE division SET division_name = ?, image = ?, description = ? WHERE id = ?"
+        //     const value = [name, imageURL, description, divisionId]
+        //     db.query(sql, value, (error, result) => {
+        //         if (error) {
+        //             // console.error("Error updating division:", error);
+        //             res.status(500).json({
+        //                 message: "Error updating division",
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.affectedRows === 0) {
+        //                 res.status(404).json({
+        //                     message: "division not found"
+        //                 });
+        //             } else {
+        //                 res.json({
+        //                     message: "Updated"
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
     } catch(err) {
         // console.error("An error occurred:", err);
         res.status(500).json({

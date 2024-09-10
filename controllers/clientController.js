@@ -145,32 +145,53 @@ const putclient = async (req, res) => {
         });
 
         logoURL = logoFile ? await file.uploadFile(logoFile) : await getLogoURLFromDB()
-        updateclient()
 
-        function updateclient(){
-            // console.log(clientname, logoURL, clientId);
-            const sql = "UPDATE client SET client_name = ?, logo = ? WHERE id = ?"
-            const value = [clientname, logoURL, clientId]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    // console.error("Error updating client:", error);
-                    res.status(500).json({
-                        message: "Error updating client", 
-                        error: error
+        const sql = "UPDATE client SET client_name = ?, logo = ? WHERE id = ?"
+        const value = [clientname, logoURL, clientId]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                // console.error("Error updating client:", error);
+                res.status(500).json({
+                    message: "Error updating client", 
+                    error: error
+                });
+            } else {
+                if (result.affectedRows === 0) {
+                    res.status(404).json({
+                        message: "client not found"
                     });
                 } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "client not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
+                    res.json({
+                        message: "Updated"
+                    });
                 }
-            });
-        }
+            }
+        });
+        // updateclient()
+        // function updateclient(){
+        //     // console.log(clientname, logoURL, clientId);
+        //     const sql = "UPDATE client SET client_name = ?, logo = ? WHERE id = ?"
+        //     const value = [clientname, logoURL, clientId]
+        //     db.query(sql, value, (error, result) => {
+        //         if (error) {
+        //             // console.error("Error updating client:", error);
+        //             res.status(500).json({
+        //                 message: "Error updating client", 
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.affectedRows === 0) {
+        //                 res.status(404).json({
+        //                     message: "client not found"
+        //                 });
+        //             } else {
+        //                 res.json({
+        //                     message: "Updated"
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
     } catch(err) {
         // console.error("An error occurred:", err);
         res.status(500).json({

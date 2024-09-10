@@ -199,31 +199,53 @@ const putintern_member = async (req, res) => {
 
         const batch = batch_id || await getbatchIDFromDB()
         imageURL = imageFile ? await file.uploadFile(imageFile) : await getEmployeeURLFromDB()
-        updateintern()
-
-        function updateintern(){
-            const sql = "UPDATE intern_member SET member_name = ? , university = ?, division = ?, instagram = ?, image = ?, batch_id = ? WHERE id = ?"
-            const value = [member_name, university, division, instagram,  imageURL, batch, internId]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    console.error("Error updating intern_member:", error);
-                    res.status(500).json({
-                        message: "Error updating intern_member", 
-                        error: error
+        
+        const sql = "UPDATE intern_member SET member_name = ? , university = ?, division = ?, instagram = ?, image = ?, batch_id = ? WHERE id = ?"
+        const value = [member_name, university, division, instagram,  imageURL, batch, internId]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                console.error("Error updating intern_member:", error);
+                res.status(500).json({
+                    message: "Error updating intern_member", 
+                    error: error
+                });
+            } else {
+                if (result.affectedRows === 0) {
+                    res.status(404).json({
+                        message: "intern_member not found"
                     });
                 } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "intern_member not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
+                    res.json({
+                        message: "Updated"
+                    });
                 }
-            });
-        }
+            }
+        });
+
+        // updateintern()
+        // function updateintern(){
+        //     const sql = "UPDATE intern_member SET member_name = ? , university = ?, division = ?, instagram = ?, image = ?, batch_id = ? WHERE id = ?"
+        //     const value = [member_name, university, division, instagram,  imageURL, batch, internId]
+        //     db.query(sql, value, (error, result) => {
+        //         if (error) {
+        //             console.error("Error updating intern_member:", error);
+        //             res.status(500).json({
+        //                 message: "Error updating intern_member", 
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.affectedRows === 0) {
+        //                 res.status(404).json({
+        //                     message: "intern_member not found"
+        //                 });
+        //             } else {
+        //                 res.json({
+        //                     message: "Updated"
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
     } catch(err) {
         console.error("An error occurred:", err);
         res.status(500).json({

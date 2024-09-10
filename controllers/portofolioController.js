@@ -232,30 +232,53 @@ const putportofolio = async (req, res) => {
         const client = client_id || await getClientFromDB();
         content1URL = content1File ? await file.uploadFile(content1File) : await getImageFromDB('content_1')
         coverURL = coverFile ? await file.uploadFile(coverFile) : await getImageFromDB('portofolio_cover');
-        updateportofolio()
-        function updateportofolio(){
-            const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
-            const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, portofolioId]
-            db.query(sql, value, (error, result) => {
-                if(error){
-                    console.log("error updating client", error)
-                    res.status(500).json({
-                        message: "error updating portofolio",
-                        error : error
+        
+        const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
+        const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, portofolioId]
+        db.query(sql, value, (error, result) => {
+            if(error){
+                console.log("error updating client", error)
+                res.status(500).json({
+                    message: "error updating portofolio",
+                    error : error
+                })
+            } else {
+                if (result.length === 0){
+                    res.status(404).json({
+                        message:"portofolio not found"
                     })
                 } else {
-                    if (result.length === 0){
-                        res.status(404).json({
-                            message:"portofolio not found"
-                        })
-                    } else {
-                        res.json({
-                            message:"updated"
-                        })
-                    }
+                    res.json({
+                        message:"updated"
+                    })
                 }
-            })
-        }
+            }
+        })
+
+        // updateportofolio()
+        // function updateportofolio(){
+        //     const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
+        //     const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, portofolioId]
+        //     db.query(sql, value, (error, result) => {
+        //         if(error){
+        //             console.log("error updating client", error)
+        //             res.status(500).json({
+        //                 message: "error updating portofolio",
+        //                 error : error
+        //             })
+        //         } else {
+        //             if (result.length === 0){
+        //                 res.status(404).json({
+        //                     message:"portofolio not found"
+        //                 })
+        //             } else {
+        //                 res.json({
+        //                     message:"updated"
+        //                 })
+        //             }
+        //         }
+        //     })
+        // }
 
     } catch(err) {
         console.error("An error occurred:", err);

@@ -257,32 +257,53 @@ const putintern_batch = async (req, res) => {
             })
         })
         imageURL = imageFile ? await file.uploadFile(imageFile) : await getinternbatchURLFromDB()
-
-        updateintern()
-        function updateintern(){
-            // console.log(instagram);
-            const sql = "UPDATE intern_batch SET batch = ?, title= ?, best_intern= ?, periode= ?, instagram= ?,philosophy= ?, image = ?, reveal = ?, siapa = ?, dua_tipe = ?, season = ? WHERE id = ?"
-            const value = [batch, title, best_intern, periode, instagram ,philosophy, imageURL, reveal, siapa, dua_tipe,season, internId]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    // console.error("Error updating intern_batch:", error);
-                    res.status(500).json({
-                        message: "Error updating intern_batch", 
-                        error: error
+        
+        const sql = "UPDATE intern_batch SET batch = ?, title= ?, best_intern= ?, periode= ?, instagram= ?,philosophy= ?, image = ?, reveal = ?, siapa = ?, dua_tipe = ?, season = ? WHERE id = ?"
+        const value = [batch, title, best_intern, periode, instagram ,philosophy, imageURL, reveal, siapa, dua_tipe,season, internId]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                // console.error("Error updating intern_batch:", error);
+                res.status(500).json({
+                    message: "Error updating intern_batch", 
+                    error: error
+                });
+            } else {
+                if (result.affectedRows === 0) {
+                    res.status(404).json({
+                        message: "intern_batch not found"
                     });
                 } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "intern_batch not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
+                    res.json({
+                        message: "Updated"
+                    });
                 }
-            });
-        }
+            }
+        });
+        // updateintern()
+        // function updateintern(){
+        //     // console.log(instagram);
+        //     const sql = "UPDATE intern_batch SET batch = ?, title= ?, best_intern= ?, periode= ?, instagram= ?,philosophy= ?, image = ?, reveal = ?, siapa = ?, dua_tipe = ?, season = ? WHERE id = ?"
+        //     const value = [batch, title, best_intern, periode, instagram ,philosophy, imageURL, reveal, siapa, dua_tipe,season, internId]
+        //     db.query(sql, value, (error, result) => {
+        //         if (error) {
+        //             // console.error("Error updating intern_batch:", error);
+        //             res.status(500).json({
+        //                 message: "Error updating intern_batch", 
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.affectedRows === 0) {
+        //                 res.status(404).json({
+        //                     message: "intern_batch not found"
+        //                 });
+        //             } else {
+        //                 res.json({
+        //                     message: "Updated"
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
     } catch(err) {
         // console.error("An error occurred:", err);
         res.status(500).json({

@@ -269,30 +269,53 @@ const putservices = async (req, res) => {
             })
         })
         coverURL = coverFile ? await file.uploadFile(coverFile) : await getservicesURLFromDB()
-        updateservices()
-        function updateservices(){
-            const sql = "UPDATE services SET services_name = ?, cover = ? , short_description = ? WHERE id = ?"
-            const value = [name, coverURL, short_description, servicesId]
-            db.query(sql, value, (error, result) => {
-                if (error) {
-                    console.error("Error updating services:", error);
-                    res.status(500).json({
-                        message: "Error updating services", 
-                        error: error
+        
+        const sql = "UPDATE services SET services_name = ?, cover = ? , short_description = ? WHERE id = ?"
+        const value = [name, coverURL, short_description, servicesId]
+        db.query(sql, value, (error, result) => {
+            if (error) {
+                console.error("Error updating services:", error);
+                res.status(500).json({
+                    message: "Error updating services", 
+                    error: error
+                });
+            } else {
+                if (result.affectedRows === 0) {
+                    res.status(404).json({
+                        message: "services not found"
                     });
                 } else {
-                    if (result.affectedRows === 0) {
-                        res.status(404).json({
-                            message: "services not found"
-                        });
-                    } else {
-                        res.json({
-                            message: "Updated"
-                        });
-                    }
+                    res.json({
+                        message: "Updated"
+                    });
                 }
-            });
-        }
+            }
+        });
+
+        // updateservices()
+        // function updateservices(){
+        //     const sql = "UPDATE services SET services_name = ?, cover = ? , short_description = ? WHERE id = ?"
+        //     const value = [name, coverURL, short_description, servicesId]
+        //     db.query(sql, value, (error, result) => {
+        //         if (error) {
+        //             console.error("Error updating services:", error);
+        //             res.status(500).json({
+        //                 message: "Error updating services", 
+        //                 error: error
+        //             });
+        //         } else {
+        //             if (result.affectedRows === 0) {
+        //                 res.status(404).json({
+        //                     message: "services not found"
+        //                 });
+        //             } else {
+        //                 res.json({
+        //                     message: "Updated"
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
     } catch(err) {
         console.error("An error occurred:", err);
         res.status(500).json({
