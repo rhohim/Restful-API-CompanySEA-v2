@@ -1,670 +1,551 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
+-- MySQL dump 10.13  Distrib 8.0.39, for Linux (x86_64)
 --
--- Host: 127.0.0.1
--- Generation Time: Aug 27, 2024 at 09:46 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
+-- Host: localhost    Database: seoweb
+-- ------------------------------------------------------
+-- Server version	8.0.39-0ubuntu0.24.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `seoweb`
---
-
--- --------------------------------------------------------
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
 -- Table structure for table `agency`
 --
 
+DROP TABLE IF EXISTS `agency`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `agency` (
-  `id` int(11) NOT NULL,
-  `photo_profile` text NOT NULL,
-  `username` text NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `photo_profile` text,
+  `username` text,
   `image_post` text NOT NULL,
-  `likes` int(11) NOT NULL,
+  `likes` int NOT NULL,
   `caption` text NOT NULL,
-  `link` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `link` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `agency`
 --
 
-INSERT INTO `agency` (`id`, `photo_profile`, `username`, `image_post`, `likes`, `caption`, `link`) VALUES
-(4, 'https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_cgExRYbhJ.png', 'agis', 'https://ik.imagekit.io/cretivox/filename_km-MPwDNB', 123123, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ', ''),
-(5, 'https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_WbUxY5o-p.png', 'Cretivox', 'https://ik.imagekit.io/cretivox/Plaza_Senayan_f5sjGTZtd.png', 553, 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ', ''),
-(27, 'https://ik.imagekit.io/cretivox/filename_7hrzsLv2m', 'asd', 'https://ik.imagekit.io/cretivox/filename_lpDpDrDoh', 0, 'asd', ''),
-(28, 'https://ik.imagekit.io/cretivox/filename_19Y1S-9TG', 'agis', 'https://ik.imagekit.io/cretivox/filename_j4N0iM1GS', 100, 'caption', ''),
-(29, 'https://ik.imagekit.io/cretivox/filename_oLL5XQF2Q', 'Samsung', 'https://ik.imagekit.io/cretivox/filename_8dfCn_ufx', 200, 'asdjklasd', ''),
-(32, 'https://ik.imagekit.io/cretivox/WhatsApp_Image_2024-08-06_at_1.47.57_PM_1_-removebg-preview_GkuE3CVP7.png', 'update', 'https://ik.imagekit.io/cretivox/sri-sultan-hamengku-buwono-hb-ix-raja-keraton-jogja-yang-juga-bapak-pramuka-indonesia_169_eQsJTXynL.jpeg', 0, 'update', 'update');
-
--- --------------------------------------------------------
+LOCK TABLES `agency` WRITE;
+/*!40000 ALTER TABLE `agency` DISABLE KEYS */;
+INSERT INTO `agency` VALUES (2,'https://ik.imagekit.io/cretivox/filename_UOndhHtk9','Cretivox','https://ik.imagekit.io/cretivox/filename_3wBleaUxX',400,'test caption','https://google.com'),(4,'https://ik.imagekit.io/cretivox/filename_d15rC18-9','asdasdasd','https://ik.imagekit.io/cretivox/filename_dTYY5jaSs',123123123,'asdasd','asdasd');
+/*!40000 ALTER TABLE `agency` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `article_data`
 --
 
+DROP TABLE IF EXISTS `article_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `article_data` (
-  `id` int(11) NOT NULL,
-  `total_visitor` int(11) NOT NULL,
-  `total_article` int(11) NOT NULL,
-  `last_post` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `total_visitor` text NOT NULL,
+  `total_article` text NOT NULL,
+  `last_post` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `article_data`
 --
 
-INSERT INTO `article_data` (`id`, `total_visitor`, `total_article`, `last_post`) VALUES
-(2, 712000, 231666, '[{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/500x500_MtDlieUDY.png\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Deluxe_Room__1__mMzle4c2z.png\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Logo_in_White_-_The_pine_forest_villas_WFCu995A_.png\"}]');
-
--- --------------------------------------------------------
+LOCK TABLES `article_data` WRITE;
+/*!40000 ALTER TABLE `article_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `article_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `category`
 --
 
+DROP TABLE IF EXISTS `category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` int(255) NOT NULL,
-  `category_name` varchar(255) NOT NULL,
-  `color` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
+  `color` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `category`
 --
 
-INSERT INTO `category` (`id`, `category_name`, `color`) VALUES
-(1, '', '6'),
-(2, '2', 'a'),
-(3, '', '');
-
--- --------------------------------------------------------
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `client`
 --
 
+DROP TABLE IF EXISTS `client`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `client` (
-  `id` int(11) NOT NULL,
-  `client_name` varchar(255) NOT NULL,
-  `logo` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `client_name` varchar(255) DEFAULT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `client`
 --
 
-INSERT INTO `client` (`id`, `client_name`, `logo`) VALUES
-(1, 'asd', 'https://ik.imagekit.io/cretivox/filename_32obq1NCe');
-
--- --------------------------------------------------------
+LOCK TABLES `client` WRITE;
+/*!40000 ALTER TABLE `client` DISABLE KEYS */;
+INSERT INTO `client` VALUES (35,'ABC Soya','https://ik.imagekit.io/cretivox/filename_TMudRgXbc'),(36,'Acer x HMNS',''),(37,'Ajinomoto',''),(38,'APC by Schneider Electric',''),(39,'Astro',''),(40,'Authenticity ID',''),(41,'Avian Brands',''),(42,'Bango',''),(43,'BCA',''),(44,'BCA Paylater',''),(45,'Binus University',''),(46,'Biore UV',''),(47,'BRI',''),(48,'Bridestory Market by Danamon',''),(49,'BRImo',''),(50,'Buttonscarves',''),(51,'Chitato',''),(52,'City Vision',''),(53,'Clarks',''),(54,'Clear x Grab (Unbranded)',''),(55,'Clozette Unbranded',''),(56,'CSR Scarlett Whitening',''),(57,'Dancow UGM',''),(58,'Danone',''),(59,'Darlie',''),(60,'Disney',''),(61,'Djarum Robotic',''),(62,'Dove',''),(63,'Durex Unbranded',''),(64,'DXI (Deep & Extreme Indonesia)',''),(65,'Femmy Fiber',''),(66,'Festival Like 2',''),(67,'Flip.id',''),(68,'Galeri 24',''),(69,'Garmin',''),(70,'Gaung Merah',''),(71,'Gojek',''),(72,'Gopay Tabungan by Bank Jago',''),(73,'Grab',''),(74,'Grabmart',''),(75,'Greenfields',''),(76,'Gudang Garam',''),(77,'HAUS',''),(78,'HealthyWay Kids',''),(79,'Honeye Lens',''),(80,'Hyundai',''),(81,'IM3',''),(82,'IMPLORA',''),(83,'Indomilk',''),(84,'Jago Syariah',''),(85,'Jenius',''),(86,'Kampus Merdeka',''),(87,'Kanzler',''),(88,'Kapal Api',''),(89,'Kitchenette',''),(90,'Kemenpora',''),(91,'KIN Yogurt',''),(92,'Kodomo',''),(93,'Lazada',''),(94,'Le Minerale',''),(95,'Lifebuoy x PMI',''),(96,'Line Bank x Hana Bank',''),(97,'LG',''),(98,'Maybelline',''),(99,'Moko Moko',''),(100,'Mola',''),(101,'Moon Chicken',''),(102,'Mr DIY',''),(103,'Ms Glow',''),(104,'Nexon',''),(105,'Nipis Madu',''),(106,'NVMEE',''),(107,'OCBC',''),(108,'One Piece',''),(109,'Oronamin C',''),(110,'Ovale',''),(111,'Pandora Experience',''),(112,'Pantene',''),(113,'Plossa',''),(114,'Pocari Sweat',''),(115,'Pond\'s Men Sunscreen',''),(116,'Pop Mie',''),(117,'Posh',''),(118,'PT. Kreasi Antar Rupa - Ancol',''),(119,'Puma',''),(120,'R1 For Men',''),(121,'Royal Canin',''),(122,'Royco',''),(123,'Salonpas',''),(124,'Samsung Galaxy Watch',''),(125,'Samsung Galaxy',''),(126,'Sasa',''),(127,'Scentplus',''),(128,'Soffell',''),(129,'Somethinc',''),(130,'Sony Pictures',''),(131,'Sunlight',''),(132,'Sunpride LYFE',''),(133,'Sunsilk',''),(134,'Superbank',''),(135,'Spotify',''),(136,'Teamup',''),(137,'Telkom Indonesia',''),(138,'Telkomsel',''),(139,'The Palace',''),(140,'The People\'s Cafe',''),(141,'Tiket.com',''),(142,'Tokopedia',''),(143,'Toyota',''),(144,'Ultramilk',''),(145,'Vaseline',''),(146,'Vidio.com',''),(147,'Vit',''),(148,'Vixal',''),(149,'Wall\'s Ice Cream',''),(150,'Wuling',''),(151,'Yaris',''),(152,'Zinc','');
+/*!40000 ALTER TABLE `client` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `division`
 --
 
+DROP TABLE IF EXISTS `division`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `division` (
-  `id` int(11) NOT NULL,
-  `division_name` text NOT NULL,
-  `image` text NOT NULL,
-  `description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `division_name` text,
+  `image` text,
+  `description` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `division`
 --
 
-INSERT INTO `division` (`id`, `division_name`, `image`, `description`) VALUES
-(2, 'Creative', 'https://ik.imagekit.io/cretivox/filename_JHOuD3-rH', ''),
-(3, 'Tech', 'https://ik.imagekit.io/cretivox/Man_Technologist_Light_Skin_Tone_7Z_YBhjMq.png', ''),
-(7, 'update', 'https://ik.imagekit.io/cretivox/cvox_e9_OU6gjR.jpg', 'update');
-
--- --------------------------------------------------------
+LOCK TABLES `division` WRITE;
+/*!40000 ALTER TABLE `division` DISABLE KEYS */;
+INSERT INTO `division` VALUES (8,'Creative','https://ik.imagekit.io/cretivox/filename_JPcRD9n2J','Lorem Ipsum'),(9,'Digital','https://ik.imagekit.io/cretivox/filename_2rOYwhAAM','loremipsum'),(10,'Production','https://ik.imagekit.io/cretivox/filename_lTObKQf7e','Loremipsum'),(11,'Video Editor','https://ik.imagekit.io/cretivox/filename_SwldEP8Vj','Loremipsum'),(12,'Finance','https://ik.imagekit.io/cretivox/filename_ugtUYnwq-','Loremipsum'),(13,'HRBP','https://ik.imagekit.io/cretivox/filename_PUZGTuwoW','Loremipsum'),(14,'Sales & Marketing','https://ik.imagekit.io/cretivox/filename_D8U9tI-N1','Loremipsum'),(15,'Tech','https://ik.imagekit.io/cretivox/filename_sjvlnPGqJ','Loremipsum'),(16,'Community','https://ik.imagekit.io/cretivox/filename_B6pYGHUvS','Loremipsum');
+/*!40000 ALTER TABLE `division` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `employee`
 --
 
+DROP TABLE IF EXISTS `employee`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
-  `id` int(11) NOT NULL,
-  `employee_name` text NOT NULL,
-  `role` text NOT NULL,
-  `image` text NOT NULL,
-  `division_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_name` text,
+  `role` text,
+  `image` text,
+  `division_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `division_id` (`division_id`),
+  CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`division_id`) REFERENCES `division` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`id`, `employee_name`, `role`, `image`, `division_id`) VALUES
-(1, 'Moch Aggiat Rachmana', 'update2', 'https://ik.imagekit.io/cretivox/filename_8etKZCJUF', 3),
-(3, 'Aggiat Rachmana', 'Head', 'https://ik.imagekit.io/cretivox/filename_EOntDFoWQ', 2);
-
--- --------------------------------------------------------
+LOCK TABLES `employee` WRITE;
+/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES (2,'Bryan Josep Trioctotatema Halawa','Creative Director','https://ik.imagekit.io/cretivox/filename_UsSowMYm0',8),(3,'Camarray Taraka Prattiwa','Graphic Designer','https://ik.imagekit.io/cretivox/filename_AzzfJHyFD',8),(4,'Fadhillah Nurlita Ahmad','Head of Digital','https://ik.imagekit.io/cretivox/filename_e7BZcGlsM',9),(5,'Annisa Latifah','Art Director','https://ik.imagekit.io/cretivox/filename_DPSiZce_0',8),(6,'Aurelia Syifa Indrayana','Social Media Officer Instagram','https://ik.imagekit.io/cretivox/filename_Wuu-cttrw',8),(7,'Kareem Reza','Social Media Officer Tiktok','https://ik.imagekit.io/cretivox/filename_U5zfctFTG',9),(8,'Mohammad Belmiro Hasballah','Sec Head Creative','https://ik.imagekit.io/cretivox/filename_N23j-PtLg',8),(9,'Putri Fatimah','Social Media Officer Instagram','https://ik.imagekit.io/cretivox/filename_0cjNR_UqL',9),(10,'Savira Puteri ','Graphic Designer Cretivox','https://ik.imagekit.io/cretivox/filename_cC3xazol5',8),(11,'Setyo Ajie Darmawa','Copywriter','https://ik.imagekit.io/cretivox/filename_1oUToMiGn',8),(12,'Aurel Azalia Syahdira','Producer','https://ik.imagekit.io/cretivox/filename_Ckbk1LHeZ',10),(13,'Josua Exel Astha Gama','Production','https://ik.imagekit.io/cretivox/filename_Y_9tYG3hP',10),(14,'Muhammad Naufal Hadafiz','Video Production','https://ik.imagekit.io/cretivox/filename_6_9Xsc9SJ',10),(15,'Bintang Raditya Putra Pamungkas','Video Editor','https://ik.imagekit.io/cretivox/filename_6Cqj9qEVU',11),(16,'Muhammad Hafizh Budi','Video Editor','https://ik.imagekit.io/cretivox/filename_h8hC8dMp-',11),(17,'Radityo Bagaskoro','Video Editor','https://ik.imagekit.io/cretivox/filename_efQBNp0mM',11),(18,'Rafsanjani Mauliza D','Production','https://ik.imagekit.io/cretivox/filename_NHRn_m76L',10),(19,'Nyawung Gagat Windarum Rasmi','Sr. Accounting Officer','https://ik.imagekit.io/cretivox/filename_L_ILROtmZ',12),(20,'Anggita Anggun Apsari','Finance & Tax Officer','https://ik.imagekit.io/cretivox/filename__cVZk_m1P',12),(21,'Vina Amelia','General Administration','https://ik.imagekit.io/cretivox/filename_xJNFrRSyv',12),(22,'Nabilla Ayu Syahrani','HRBP','https://ik.imagekit.io/cretivox/filename_PM8ZkEoTc',13),(23,'Rido Prasetyo','Account Manager','https://ik.imagekit.io/cretivox/filename_hPK2Dh2pG',14),(24,'Ayu Kemala Putri','Account Executive','https://ik.imagekit.io/cretivox/filename_sXZ5SufeI',14),(25,'Alishia ','Account Executive','https://ik.imagekit.io/cretivox/filename_W9ffJ1CMa',14),(26,'Maria Noelani Christin Pua','Account Executive','https://ik.imagekit.io/cretivox/filename_y2OEhZ1V9',14),(27,'Moch Aggiat Rachmana','Head of Tech','https://ik.imagekit.io/cretivox/filename_BWOuii9qX',15),(28,'Abdhul Rhohim','Software Engineer','https://ik.imagekit.io/cretivox/filename_DHxQI59RN',15),(30,'Afifa Fauziya Rinaldi','Sr. Community Officer','https://ik.imagekit.io/cretivox/filename_WcC-JLyQX',16),(31,'Hania Adiva Perpati','Community Officer','https://ik.imagekit.io/cretivox/filename_-Z6HHMtKi',16),(34,'Rama Rahman','IT Support','https://ik.imagekit.io/cretivox/filename_OhQz0uMKs',15);
+/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `history`
 --
 
+DROP TABLE IF EXISTS `history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `history` (
-  `id` int(11) NOT NULL,
-  `title` text NOT NULL,
-  `date` text NOT NULL,
-  `description` text NOT NULL,
-  `background_color` text NOT NULL,
-  `image` text NOT NULL,
-  `background_image` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` text,
+  `date` text,
+  `description` text,
+  `background_color` text,
+  `image` text,
+  `background_image` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `history`
 --
 
-INSERT INTO `history` (`id`, `title`, `date`, `description`, `background_color`, `image`, `background_image`) VALUES
-(2, 'The day where we begin', '4th September 2024', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ullamcorper sit amet massa id viverra. Donec sollicitudin risus eget magna sodales ullamcorper. Ut at varius orci. In aliquet est dui, eget sodales erat rhoncus sit amet. Nunc vel ornare tellus. Etiam enim magna, tempor ut ex quis, eleifend hendrerit metus. Phasellus ac tortor lectus. Aenean gravida purus nec congue congue. Aliquam nec porttitor sem. Phasellus vitae dictum mi. Duis scelerisque velit cursus suscipit tincidunt. Phasellus congue efficitur quam, sit amet commodo ipsum condimentum nec. Donec cursus ipsum ac lorem egestas ornare. Donec malesuada purus eu dui viverra ornare. Mauris in commodo nulla. In fermentum libero eget efficitur pulvinar. Proin orci est, dapibus in euismod eu, pretium vel nibh. Phasellus blandit urna vitae dui facilisis, ac congue elit laoreet.', '#880808', 'https://ik.imagekit.io/cretivox/filename_P3G7QSTPY', 'https://ik.imagekit.io/cretivox/1920x1080_i8IM0UZ8w.png'),
-(4, 'Journey 1', '4th September 2024', 'Testing description', '#0040ff', 'https://ik.imagekit.io/cretivox/filename_nULKh_ZVH', 'https://ik.imagekit.io/cretivox/filename_ZC8FuRgCa'),
-(5, 'The Journeey', '4th September 2024', 'testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest', '#000000', 'https://ik.imagekit.io/cretivox/filename_r7ujNPL4p', 'https://ik.imagekit.io/cretivox/filename_S3Z8W7AHg');
-
--- --------------------------------------------------------
+LOCK TABLES `history` WRITE;
+/*!40000 ALTER TABLE `history` DISABLE KEYS */;
+INSERT INTO `history` VALUES (2,'aggiat','aggiat','asdasd','#000000','https://ik.imagekit.io/cretivox/filename_zCQ0yzc6P','https://ik.imagekit.io/cretivox/filename_grqv1O7YW');
+/*!40000 ALTER TABLE `history` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `ig_data`
 --
 
+DROP TABLE IF EXISTS `ig_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ig_data` (
-  `id` int(11) NOT NULL,
-  `total_followers` int(11) NOT NULL,
-  `ER` int(11) NOT NULL,
-  `last_post` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `total_followers` text,
+  `ER` text,
+  `last_post` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `ig_data`
 --
 
-INSERT INTO `ig_data` (`id`, `total_followers`, `ER`, `last_post`) VALUES
-(1, 712000, 3, '[{\"title\":\"Buku Kunjaw\",\"description\":\"Lorem ipsum dolor sit amet, consectetur adipi scing elit, sed do eiusmod tempor.\",\"year\":\"2019\",\"brand\":\"Internal\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Konten_nrurabh-4.PNG\",\"link\":\"https://google.com\"},{\"title\":\"Pernah Ngga Pernah\",\"description\":\"Lorem ipsum dolor sit amet, consectetur adipi scing elit, sed do eiusmod tempor.\",\"year\":\"2020\",\"brand\":\"Samsung\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Konten_68H93ySs-.PNG\",\"link\":\"https://google.com\"},{\"title\":\"Siapa\",\"description\":\"Lorem ipsum dolor sit amet, consectetur adipi scing elit, sed do eiusmod tempor.\",\"year\":\"2024\",\"brand\":\"Softex\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Konten_l-ZYfox-H.PNG\",\"link\":\"https://google.com\"}]');
-
--- --------------------------------------------------------
+LOCK TABLES `ig_data` WRITE;
+/*!40000 ALTER TABLE `ig_data` DISABLE KEYS */;
+INSERT INTO `ig_data` VALUES (1,'811K+','27M+','[{\"title\":\"MEME\",\"description\":\"Description\",\"year\":\"2024\",\"brand\":\"IM3\",\"imageurl\":\"https://ik.imagekit.io/cretivox/IM3_SobSxtEc8.png\",\"link\":\"https://www.instagram.com/p/C4UxuAcyxF1/?img_index=1\"},{\"title\":\"Belacan\",\"description\":\"Description\",\"year\":\"2024\",\"brand\":\"Tokopedia\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Snapinsta.app_449863918_350401751426743_5477483165085870402_n_1080_bLam_hR_x.jpg\",\"link\":\"https://www.instagram.com/p/C9FSbjCyOfx/?img_index=1\"},{\"title\":\"Tanya Kantor\",\"description\":\"Description\",\"year\":\"2024\",\"brand\":\"Gaung Merah\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Image-738_jNW9WU7dH.jpg\",\"link\":\"https://drive.google.com/file/d/13EeCiV59f6yCwUG48h7hlY6qbe-utAN8/view?usp=drive_link\"}]');
+/*!40000 ALTER TABLE `ig_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `intern_batch`
 --
 
+DROP TABLE IF EXISTS `intern_batch`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `intern_batch` (
-  `id` int(11) NOT NULL,
-  `batch` text NOT NULL,
-  `title` text NOT NULL,
-  `image` text NOT NULL,
-  `siapa` text NOT NULL,
-  `reveal` text NOT NULL,
-  `dua_tipe` text NOT NULL,
-  `best_intern` text NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `batch` text,
+  `title` text,
+  `image` text,
+  `siapa` text,
+  `reveal` text,
+  `dua_tipe` text,
+  `best_intern` text,
+  `philosophy` text,
+  `instagram` text,
+  `season` text,
   `periode` text NOT NULL,
-  `instagram` text NOT NULL,
-  `philosophy` text NOT NULL,
-  `season` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `intern_batch`
 --
 
-INSERT INTO `intern_batch` (`id`, `batch`, `title`, `image`, `siapa`, `reveal`, `dua_tipe`, `best_intern`, `periode`, `instagram`, `philosophy`, `season`) VALUES
-(1, 'Batch 8', 'The Dream Boat', 'https://ik.imagekit.io/cretivox/MAIN_POSTER_2__1__jwUkN8Cw1.jpg', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'Bang abang', '2022', '@dream.boat', 'Suatu ketika dalam sebuah perahu menuju ketenangan', '1'),
-(2, 'Batch X', 'Finale Season', 'https://ik.imagekit.io/cretivox/MAIN_POSTER_2__1___j71T0jlR.jpg', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'Bang abang', '2023', '@finaleseason', 'Finale season bgt nihhhhhhhhhh', '1'),
-(3, 'Batch S.E', 'Resistance in Bloom', 'https://ik.imagekit.io/cretivox/MAIN_POSTER_2__1__WzqNZmGSb.jpg', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'Ka cips', '2023', '@sdn.mekarwangi03', 'Special edition anjayyy special bgttttt', '1'),
-(4, 'S2B1', 'Perpetual Arrival', 'https://ik.imagekit.io/cretivox/WhatsApp_Image_2024-07-04_at_08.38.34_k34ePMapwv.jpeg', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'http://placeimg.com/640/480/nature', 'Masih Rahasia', '2024', '@tong_setan_b2s1', 'Orang nya si sini serem serem tapi lucu', '2');
-
--- --------------------------------------------------------
+LOCK TABLES `intern_batch` WRITE;
+/*!40000 ALTER TABLE `intern_batch` DISABLE KEYS */;
+INSERT INTO `intern_batch` VALUES (1,'Batch 8','The Dream Boat','https://ik.imagekit.io/cretivox/WhatsApp_Image_2024-07-04_at_08.38.34_nE7VtbFQU.jpeg','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','Mas maszeh','Perahu perahu perahuuu','dreamboat','1','2021'),(2,'Batch X','Season Finale','https://ik.imagekit.io/cretivox/510_-_Mama_vLfowQsBS.jpeg','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','Mas Mas lagi','Final banget iniiiii','batchxseasonfinale','1','2023'),(3,'Batch S.E','Resistance in bloom','https://ik.imagekit.io/cretivox/MAIN_POSTER_2__1__QZj4F5mM6.jpg','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','cipaa','Special edition banget inii','sdn.mekarwangi03','1','2023'),(4,'Batch 1','Perpetual Arrival','https://ik.imagekit.io/cretivox/1722017124918_8VskBJ8HP.jpeg','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','http://placeimg.com/640/480/nature','Rahasia','Ngeri ngeri di sinii','tongxsetanz','2','2023');
+/*!40000 ALTER TABLE `intern_batch` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `intern_contact`
 --
 
+DROP TABLE IF EXISTS `intern_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `intern_contact` (
-  `id` int(11) NOT NULL,
-  `contact_name` text NOT NULL,
-  `university` text NOT NULL,
-  `email` text NOT NULL,
-  `phone` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `contact_name` text,
+  `university` text,
+  `email` text,
+  `phone` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `intern_contact`
 --
 
-INSERT INTO `intern_contact` (`id`, `contact_name`, `university`, `email`, `phone`) VALUES
-(1, 'sini', 'university sini', 'university@gmail.com', '085726632123'),
-(3, 'SAS', 'http://placeimg.com/640/480/animals', '04319820', 'Auto Loan Account');
-
--- --------------------------------------------------------
+LOCK TABLES `intern_contact` WRITE;
+/*!40000 ALTER TABLE `intern_contact` DISABLE KEYS */;
+/*!40000 ALTER TABLE `intern_contact` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `intern_member`
 --
 
+DROP TABLE IF EXISTS `intern_member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `intern_member` (
-  `id` int(11) NOT NULL,
-  `member_name` text NOT NULL,
-  `image` text NOT NULL,
-  `university` text NOT NULL,
-  `division` text NOT NULL,
-  `instagram` text NOT NULL,
-  `batch_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `member_name` text,
+  `image` text,
+  `university` text,
+  `division` text,
+  `batch_id` int DEFAULT NULL,
+  `periode` text,
+  `instagram` text,
+  PRIMARY KEY (`id`),
+  KEY `batch_id` (`batch_id`),
+  CONSTRAINT `intern_member_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `intern_batch` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `intern_member`
 --
 
-INSERT INTO `intern_member` (`id`, `member_name`, `image`, `university`, `division`, `instagram`, `batch_id`) VALUES
-(1, 'Yuds', 'https://ik.imagekit.io/cretivox/Hi_BKXZ8pB6h.jpeg', 'Gunadarma University', 'Front end Developer', '@yudhiazhr', 4),
-(2, 'Rambs', 'https://ik.imagekit.io/cretivox/Chelsea_Smile_od_IQEDpi.jpeg', 'President University', 'Human Resource', '@rambs', 4),
-(3, 'wireless', 'https://ik.imagekit.io/cretivox/WhatsApp_Image_2024-07-04_at_08.38.34_tdzSqoATF.jpeg', '1qEwx7HgrU9JTg3CqjNE2SYS9B', 'South Kenton', 'open-source', 2);
-
--- --------------------------------------------------------
+LOCK TABLES `intern_member` WRITE;
+/*!40000 ALTER TABLE `intern_member` DISABLE KEYS */;
+INSERT INTO `intern_member` VALUES (1,'bluetooth','https://ik.imagekit.io/cretivox/okmas-bry__1__V93Jab10S.jpeg','3X45hhCEK8vGNuXJxVm68B6dmTWcevYuh','New Shermanton',4,NULL,'primary');
+/*!40000 ALTER TABLE `intern_member` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `platform`
 --
 
+DROP TABLE IF EXISTS `platform`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `platform` (
-  `id` int(11) NOT NULL,
-  `value_1` text NOT NULL,
-  `unit_1` text NOT NULL,
-  `value_2` text NOT NULL,
-  `unit_2` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `value_1` text,
+  `unit_1` text,
+  `value_2` text,
+  `unit_2` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- --------------------------------------------------------
+--
+-- Dumping data for table `platform`
+--
+
+LOCK TABLES `platform` WRITE;
+/*!40000 ALTER TABLE `platform` DISABLE KEYS */;
+/*!40000 ALTER TABLE `platform` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `portfolio_highlight`
+--
+
+DROP TABLE IF EXISTS `portfolio_highlight`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `portfolio_highlight` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `portfolio_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `portfolio_id` (`portfolio_id`),
+  CONSTRAINT `portfolio_highlight_ibfk_1` FOREIGN KEY (`portfolio_id`) REFERENCES `portofolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `portfolio_highlight`
+--
+
+LOCK TABLES `portfolio_highlight` WRITE;
+/*!40000 ALTER TABLE `portfolio_highlight` DISABLE KEYS */;
+INSERT INTO `portfolio_highlight` VALUES (1,1),(2,2);
+/*!40000 ALTER TABLE `portfolio_highlight` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `portofolio`
 --
 
+DROP TABLE IF EXISTS `portofolio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `portofolio` (
-  `id` int(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `introduction` text NOT NULL,
-  `client_id` int(255) NOT NULL,
-  `services_id` int(255) NOT NULL,
-  `year_project` int(255) NOT NULL,
-  `scope` varchar(255) NOT NULL,
-  `team` varchar(255) NOT NULL,
-  `slug` text NOT NULL,
-  `meta_description` text NOT NULL,
-  `content_1` varchar(255) NOT NULL,
-  `content_2` varchar(255) NOT NULL,
-  `portofolio_cover` varchar(255) NOT NULL,
-  `created_at` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `introduction` text,
+  `client_id` int DEFAULT NULL,
+  `services_id` int DEFAULT NULL,
+  `year_project` int DEFAULT NULL,
+  `scope` varchar(255) DEFAULT NULL,
+  `team` varchar(255) DEFAULT NULL,
+  `slug` text,
+  `meta_description` text,
+  `content_1` varchar(255) DEFAULT NULL,
+  `content_2` varchar(255) DEFAULT NULL,
+  `portofolio_cover` varchar(255) DEFAULT NULL,
+  `created_at` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `client_id` (`client_id`),
+  KEY `services_id` (`services_id`),
+  CONSTRAINT `portofolio_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`),
+  CONSTRAINT `portofolio_ibfk_2` FOREIGN KEY (`services_id`) REFERENCES `services` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- --------------------------------------------------------
+--
+-- Dumping data for table `portofolio`
+--
+
+LOCK TABLES `portofolio` WRITE;
+/*!40000 ALTER TABLE `portofolio` DISABLE KEYS */;
+INSERT INTO `portofolio` VALUES (1,'aku adalah anak Gembala Selalu riang serta gembira','Lowell Corner',44,1,2024,'Lavada Mill','Marcos Haven','/aku-adalah-anak-gembala-selalu-riang-serta-gembira','hahaskduasdanwdawdk','https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_gjybVtpH8.png','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_B8rMRJLow.jpg','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_3S3Q9PeTO.jpg','2024-09-03'),(2,'aku adalah anak Gembala Selalu riang serta gembira','Alessia Ridges',42,2,2024,'Brooke Village','Kshlerin Mill','/aku-adalah-anak-gembala-selalu-riang-serta-gembira','hahaskduasdanwdawdk','https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_vXdd7fKg3.png','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_aPqdTDQY6.jpg','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_nbKwQQqsj.jpg','2024-09-03'),(3,'aku adalah anak Gembala Selalu riang serta gembira','Schowalter Trace',42,2,2024,'Rogahn Drive','Hickle Prairie','/aku-adalah-anak-gembala-selalu-riang-serta-gembira','hahaskduasdanwdawdk','https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_aLY_Mpo-9.png','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_TNZuVrFd9.jpg','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080__9bmPPnwN.jpg','2024-09-03'),(4,'aku adalah anak Gembala Selalu riang serta gembira','Horacio Trace',50,2,2024,'Frontend, GSAP','Mathilde Orchard','/aku-adalah-anak-gembala-selalu-riang-serta-gembira','hahaskduasdanwdawdk','https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_NZ_U-DQpj.png','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_MfjDIPMVD.jpg','https://ik.imagekit.io/cretivox/Snapinsta.app_432321962_7194902193950675_6589581037930994979_n_1080_wpN2mvEP3.jpg','2024-09-04');
+/*!40000 ALTER TABLE `portofolio` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `random_img`
 --
 
+DROP TABLE IF EXISTS `random_img`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `random_img` (
-  `id` int(11) NOT NULL,
-  `image` text NOT NULL,
-  `alt_image` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `image` text,
+  `alt_image` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `random_img`
 --
 
-INSERT INTO `random_img` (`id`, `image`, `alt_image`) VALUES
-(69, 'https://ik.imagekit.io/cretivox/FOR_BC_4UsX3tcsV.PNG', 'FOR BC.PNG'),
-(71, 'https://ik.imagekit.io/cretivox/GSAP_2023_-UHqdZUiV.png', 'GSAP_2023.png');
-
--- --------------------------------------------------------
+LOCK TABLES `random_img` WRITE;
+/*!40000 ALTER TABLE `random_img` DISABLE KEYS */;
+INSERT INTO `random_img` VALUES (3,'https://ik.imagekit.io/cretivox/f3a9a38b-116d-4b35-8f46-8d8abb78166f_ij5mJXthA.png','agis');
+/*!40000 ALTER TABLE `random_img` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `services`
 --
 
+DROP TABLE IF EXISTS `services`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `services` (
-  `id` int(11) NOT NULL,
-  `services_name` varchar(255) NOT NULL,
-  `cover` varchar(255) NOT NULL,
-  `short_description` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `services_name` varchar(255) DEFAULT NULL,
+  `cover` varchar(255) DEFAULT NULL,
+  `short_description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `services`
 --
 
-INSERT INTO `services` (`id`, `services_name`, `cover`, `short_description`) VALUES
-(1, 'Dr.', '', 'cross-platform'),
-(2, 'Dr.', '', 'haptic');
-
--- --------------------------------------------------------
+LOCK TABLES `services` WRITE;
+/*!40000 ALTER TABLE `services` DISABLE KEYS */;
+INSERT INTO `services` VALUES (1,'Social Media Handling','https://ik.imagekit.io/cretivox/filename_rI-z2gPoG','Socmed Handling Test'),(2,'KOL Specialist','https://ik.imagekit.io/cretivox/filename_PEjKmJqFF','KOL Specialist Description');
+/*!40000 ALTER TABLE `services` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tiktok_data`
 --
 
+DROP TABLE IF EXISTS `tiktok_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tiktok_data` (
-  `id` int(11) NOT NULL,
-  `total_followers` int(11) NOT NULL,
-  `total_views` int(11) NOT NULL,
-  `last_post` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `total_followers` text,
+  `total_views` text,
+  `last_post` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `tiktok_data`
 --
 
-INSERT INTO `tiktok_data` (`id`, `total_followers`, `total_views`, `last_post`) VALUES
-(1, 712000, 231666, '[{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/1568642069729-stib-di-pariaman_j5XeLtwM_.jpg\",\"link\":\"http://placeimg.com/640/480/animals\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/WhatsApp_Image_2024-07-30_at_3.54.59_PM_UIXBs35MC.jpeg\",\"link\":\"http://placeimg.com/640/480/animals\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Capture12__mwgO2f1R.JPG\",\"link\":\"http://placeimg.com/640/480/animals\"}]');
-
--- --------------------------------------------------------
+LOCK TABLES `tiktok_data` WRITE;
+/*!40000 ALTER TABLE `tiktok_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tiktok_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`) VALUES
-(1, 'admin_cbn360', '$2a$12$tg.p0n7qBq4w/I4WMI9FOuFNTa/wiEjEBWdMvouJfGJcdHC09ktZmdULl98s');
-
--- --------------------------------------------------------
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'admin_cbn360','$2a$12$tg.p0n7qBq4w/I4WMI9FOuFNTa/wiEjEBWdMvouJfGJcdHC09ktZmdULl98s');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `youtube_data`
 --
 
+DROP TABLE IF EXISTS `youtube_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `youtube_data` (
-  `id` int(11) NOT NULL,
-  `total_subscribers` int(11) NOT NULL,
-  `total_views` int(11) NOT NULL,
-  `last_post` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `total_subscribers` text,
+  `total_views` text,
+  `last_post` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `youtube_data`
 --
 
-INSERT INTO `youtube_data` (`id`, `total_subscribers`, `total_views`, `last_post`) VALUES
-(1, 712000, 231666, '[{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/1568642069729-stib-di-pariaman_USYE2woiA_.jpg\",\"link\":\"http://placeimg.com/640/480/animals\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Logo_in_White_-_The_pine_forest_villas_LXqwZoXon.png\",\"link\":\"http://placeimg.com/640/480/animals\"},{\"title\":\"update\",\"description\":\"update\",\"year\":\"update\",\"brand\":\"update\",\"imageurl\":\"https://ik.imagekit.io/cretivox/v2_wTj77yTPW.JPG\",\"link\":\"http://placeimg.com/640/480/animals\"}]');
+LOCK TABLES `youtube_data` WRITE;
+/*!40000 ALTER TABLE `youtube_data` DISABLE KEYS */;
+INSERT INTO `youtube_data` VALUES (2,'910K+','142M+','[{\"title\":\"Blind Date\",\"description\":\"Description\",\"year\":\"2023\",\"brand\":\"Axe\",\"imageurl\":\"https://ik.imagekit.io/cretivox/Blind_Date_Axe_00000_52Y4IjjJ5.jpg\",\"link\":\"https://www.youtube.com/watch?v=NuVgJUXx2cc\"},{\"title\":\"Coba Tebak\",\"description\":\"Description\",\"year\":\"2023\",\"brand\":\"Cussons Baby Newborn\",\"imageurl\":\"https://ik.imagekit.io/cretivox/CT_BAYI_00000_JiCxu1Mnx.jpg\",\"link\":\"https://www.youtube.com/watch?v=kCJV_qClfu0\"},{\"title\":\"Ternyata Begini\",\"description\":\"Description\",\"year\":\"2024\",\"brand\":\"Jago Syariah\",\"imageurl\":\"https://ik.imagekit.io/cretivox/TB_JAGO_SYARIAH_00000_fJ6xTXi-w.jpg\",\"link\":\"https://www.youtube.com/watch?v=xajQbRSm_Hw\"}]');
+/*!40000 ALTER TABLE `youtube_data` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `agency`
---
-ALTER TABLE `agency`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `article_data`
---
-ALTER TABLE `article_data`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `category`
---
-ALTER TABLE `category`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `client`
---
-ALTER TABLE `client`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `division`
---
-ALTER TABLE `division`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `employee`
---
-ALTER TABLE `employee`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_division` (`division_id`);
-
---
--- Indexes for table `history`
---
-ALTER TABLE `history`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `ig_data`
---
-ALTER TABLE `ig_data`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `intern_batch`
---
-ALTER TABLE `intern_batch`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `intern_contact`
---
-ALTER TABLE `intern_contact`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `intern_member`
---
-ALTER TABLE `intern_member`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `batch_id` (`batch_id`);
-
---
--- Indexes for table `platform`
---
-ALTER TABLE `platform`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `portofolio`
---
-ALTER TABLE `portofolio`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idclient` (`client_id`),
-  ADD KEY `idservices` (`services_id`);
-
---
--- Indexes for table `random_img`
---
-ALTER TABLE `random_img`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `tiktok_data`
---
-ALTER TABLE `tiktok_data`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `youtube_data`
---
-ALTER TABLE `youtube_data`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `agency`
---
-ALTER TABLE `agency`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
-
---
--- AUTO_INCREMENT for table `article_data`
---
-ALTER TABLE `article_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `category`
---
-ALTER TABLE `category`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `client`
---
-ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `division`
---
-ALTER TABLE `division`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT for table `employee`
---
-ALTER TABLE `employee`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `history`
---
-ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `ig_data`
---
-ALTER TABLE `ig_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `intern_batch`
---
-ALTER TABLE `intern_batch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `intern_contact`
---
-ALTER TABLE `intern_contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `intern_member`
---
-ALTER TABLE `intern_member`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT for table `platform`
---
-ALTER TABLE `platform`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `portofolio`
---
-ALTER TABLE `portofolio`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `random_img`
---
-ALTER TABLE `random_img`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
-
---
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT for table `tiktok_data`
---
-ALTER TABLE `tiktok_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `youtube_data`
---
-ALTER TABLE `youtube_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `employee`
---
-ALTER TABLE `employee`
-  ADD CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`division_id`) REFERENCES `division` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `intern_member`
---
-ALTER TABLE `intern_member`
-  ADD CONSTRAINT `intern_member_ibfk_1` FOREIGN KEY (`batch_id`) REFERENCES `intern_batch` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `portofolio`
---
-ALTER TABLE `portofolio`
-  ADD CONSTRAINT `portofolio_ibfk_2` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `portofolio_ibfk_3` FOREIGN KEY (`services_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-09-10  2:57:38
