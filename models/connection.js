@@ -8,7 +8,7 @@
 //     database : process.env.database
 // })
 
-// module.exports = db
+// module.exports = db 
 
 const mysql = require('mysql2');
 // require('dotenv').config();
