@@ -1,6 +1,6 @@
 const db = require("../models/connection")
 const bcrypt = require('bcrypt');
-require("dotenv").config()
+// require("dotenv").config()
 const jwt = require('jsonwebtoken');
 
 const postlogin = (req,res) => {
