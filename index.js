@@ -1,6 +1,7 @@
 const express = require('express');
 require('dotenv').config()
 const app = express();
+const path = require('path')
 const bodyparser = require('body-parser')
 const cors = require("cors");
 const port = 3333
@@ -56,7 +57,7 @@ app.use('/api/v1/intern/member', middleAuth, internmemberRoute)
 app.use('/api/v1/intern/contact',middleAuth, intercontactRoute)
 
 app.get('/', (req, res) => {
-  res.send('நான் ஒரு மேய்க்கும் பையன், எப்போதும் மகிழ்ச்சியாகவும் மகிழ்ச்சியாகவும் இருக்கிறேன்');
+  res.sendFile(path.join(__dirname, 'public', 'page.html'))
 });
 
 
