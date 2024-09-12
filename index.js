@@ -56,7 +56,7 @@ app.use('/api/v1/intern/member', middleAuth, internmemberRoute)
 app.use('/api/v1/intern/contact',middleAuth, intercontactRoute)
 
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
+  res.send('நான் ஒரு மேய்க்கும் பையன், எப்போதும் மகிழ்ச்சியாகவும் மகிழ்ச்சியாகவும் இருக்கிறேன்');
 });
 
 
