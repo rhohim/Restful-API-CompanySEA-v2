@@ -31,6 +31,7 @@ const platformRoute = require("./routers/platform")
 const highRoute = require("./routers/highlight")
 const loginRoute = require("./routers/login")
 const hookRoute = require("./routers/hook")
+const highlightclientroute = require("./routers/highlightclient")
 
 const internbatchRoute = require("./routers/internbatch")
 const internmemberRoute = require("./routers/internmember")
@@ -53,10 +54,11 @@ app.use('/api/v1/company/platform', middleAuth, platformRoute)
 app.use('/api/v1/company/highlight', middleAuth, highRoute)
 app.use('/api/v1/login/company', loginRoute)
 app.use('/api/v1/profile', middleAuth, hookRoute)
+app.use('/api/v1/company/highlight-client', middleAuth, highlightclientroute)
 
 app.use('/api/v1/intern/batch', middleAuth, internbatchRoute)
 app.use('/api/v1/intern/member', middleAuth, internmemberRoute)
-app.use('/api/v1/intern/contact',middleAuth, intercontactRoute)
+app.use('/api/v1/intern/contact', middleAuth, intercontactRoute)
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'page.html'))
