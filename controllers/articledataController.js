@@ -41,7 +41,7 @@ const getAllarticle_data = (req,res ) => {
         }      
     })
 }
-
+ 
 const postarticle_data = async (req, res) => {
     try {
         let imageURL1, imageURL2, imageURL3;

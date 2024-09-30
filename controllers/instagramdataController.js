@@ -175,7 +175,7 @@ const deleteig_databyID = (req, res) => {
                 res.json({
                     message: "deleted"
                 });
-            }
+            } 
         }
     });
 }
