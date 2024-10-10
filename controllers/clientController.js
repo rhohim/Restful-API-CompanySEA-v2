@@ -14,13 +14,14 @@ const getAllclient = (req,res ) => {
 
     // Extend SQL query with search condition if searchName is provided
     if (searchName) {
-        sql += " WHERE client_name LIKE ?";
+        sql += " WHERE LOWER(client_name) LIKE LOWER(?) ";
         params.push(searchName);
-    }
         
-    // Apply pagination
-    sql += " ORDER BY client_name ASC LIMIT ?, ?";
-    params.push(start, pageSize);
+    } else {
+        // Apply pagination
+        sql += " ORDER BY client_name ASC LIMIT ?, ?";
+        params.push(start, pageSize);
+    }
     // console.log(sql);
     // console.log(params);
     db.query(sql, params, (error, result) => {
