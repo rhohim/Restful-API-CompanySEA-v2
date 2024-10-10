@@ -3,7 +3,7 @@ const file = require("../config/filehandling")
 
   
 const getAllclient = (req,res ) => {
-    const baseSQL = "SELECT * FROM client ORDER BY client_name ASC";
+    const baseSQL = "SELECT * FROM client";
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 15;
     const searchName = req.query.name ? `%${req.query.name}%` : null;
@@ -19,7 +19,7 @@ const getAllclient = (req,res ) => {
     }
         
     // Apply pagination
-    sql += " LIMIT ?, ?";
+    sql += " ORDER BY client_name ASC LIMIT ?, ?";
     params.push(start, pageSize);
     // console.log(sql);
     // console.log(params);
