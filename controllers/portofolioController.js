@@ -11,6 +11,7 @@ const getAllportofolio = (req,res) => {
                 message: "error fetching portofolio",
                 error : error.message
             })
+            console.log(error.message)
         } else {
             if (result.length === 0){
                 res.status(404).json({
@@ -31,6 +32,7 @@ const getAllportofolio = (req,res) => {
                         slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
                         meta_description : data.meta_description, 
                         created_at : data.created_at,
+                        background_color : data.background_color,
                         client : {
                             id : data.client_id,
                             name :data.client_name,
@@ -62,13 +64,13 @@ const postportofolio = async (req, res) => {
         coverURL = coverFile ? await file.uploadFile(coverFile) : ''
         content1URL = content1File ? await file.uploadFile(content1File) : ''
     
-        const {title, introduction, year_project, scope, team, client_id, services_id} = req.body
+        const {title, introduction, year_project, scope, team, client_id, services_id, background_color} = req.body
         const creationDate = new Date()
         const created_at = creationDate.toISOString().slice(0, 10)
         const slug = "/"+title.toLowerCase().replace(/ /g, '-')
         const meta = req.body.meta_description
-        const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, slug, meta_description, client_id, services_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"
-        const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, slug, meta, client_id, services_id]
+        const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, slug, meta_description, client_id, services_id, background_color) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?)"
+        const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, slug, meta, client_id, services_id, background_color]
         db.query(sql, value, (error, result) => {
             if (error) {
                 res.status(500).json({
@@ -148,6 +150,7 @@ const getportofoliobyID = (req,res) => {
                         slug: result[0].services_name.toLowerCase().replace(/ /g, '-')+result[0].slug,
                         meta_description : result[0].meta_description,  
                         created_at : result[0].created_at,
+                        background_color : result[0].background_color,
                         client : {
                             id : result[0].client_id,
                             name :result[0].client_name,
@@ -194,7 +197,7 @@ const deleteportofoliobyID = (req, res) => {
 
 const putportofolio = async (req, res) => {
     const portofolioId = req.params.id
-    const {title, meta_description, introduction, year_project,scope,team,client_id,services_id} = req.body
+    const {title, meta_description, introduction, year_project,scope,team,client_id,services_id, background_color} = req.body
     const slug = "/"+title.toLowerCase().replace(/ /g, '-')
     let coverURL, content1URL, content2URL = ""
     const coverFile = req.files && req.files['cover'] && req.files['cover'][0]
@@ -233,8 +236,8 @@ const putportofolio = async (req, res) => {
         content1URL = content1File ? await file.uploadFile(content1File) : await getImageFromDB('content_1')
         coverURL = coverFile ? await file.uploadFile(coverFile) : await getImageFromDB('portofolio_cover');
         
-        const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
-        const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, portofolioId]
+        const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ?, background_color = ? WHERE id = ? "
+        const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, background_color, portofolioId]
         db.query(sql, value, (error, result) => {
             if(error){
                 console.log("error updating client", error)
