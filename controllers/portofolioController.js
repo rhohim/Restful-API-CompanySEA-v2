@@ -11,7 +11,7 @@ const getAllportofolio = (req,res) => {
                 message: "error fetching portofolio",
                 error : error.message
             })
-            console.log(error.message)
+            
         } else {
             if (result.length === 0){
                 res.status(404).json({
