@@ -29,7 +29,7 @@ const getAllportofolio = (req,res) => {
                         content_1 : data.content_1, 
                         // content_2 : data.content_2,
                         cover: data.portofolio_cover,
-                        slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
+                        slug: data.slug,
                         meta_description : data.meta_description, 
                         created_at : data.created_at,
                         background_color : data.background_color,
@@ -57,7 +57,7 @@ const getAllportofolio = (req,res) => {
 
 const postportofolio = async (req, res) => {
     try {
-        let coverURL,content1URL, content2URL
+        let coverURL,content1URL, content2URL, services_name
         content2URL = "" //delete content2
         const coverFile = req.files && req.files['cover'] && req.files['cover'][0]
         const content1File = req.files && req.files['content1'] && req.files['content1'][0]
@@ -67,23 +67,39 @@ const postportofolio = async (req, res) => {
         const {title, introduction, year_project, scope, team, client_id, services_id, background_color} = req.body
         const creationDate = new Date()
         const created_at = creationDate.toISOString().slice(0, 10)
-        const slug = "/"+title.toLowerCase().replace(/ /g, '-')
-        const meta = req.body.meta_description
-        const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, slug, meta_description, client_id, services_id, background_color) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?)"
-        const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, slug, meta, client_id, services_id, background_color]
-        db.query(sql, value, (error, result) => {
-            if (error) {
-                res.status(500).json({
-                    message: "Error inserting client",
-                    error: error
-                });
-            } else {
-                res.json({
-                    message: "Success",
-                    clientId: result.insertId
-                });
+        //get services_name
+        const serviceQuery = "SELECT services_name FROM services WHERE id = ?";
+        const serviceValue = [services_id];
+        db.query(serviceQuery, serviceValue, async (error, serviceResult) => {
+            if (error || serviceResult.length === 0) {
+                return res.status(500).json({ message: "Error fetching service name", error });
             }
+            services_name = serviceResult[0].services_name;
+            // console.log(services_name);
+            const slug = services_name.toLowerCase().replace(/\s+/g, '-')+"-"+title
+                .toLowerCase()                                
+                .replace(/[^a-z0-9\s-]/g, '')                 
+                .replace(/\s+/g, '-')                         
+                .replace(/-+/g, '-');
+            // console.log(slug)
+            const meta = req.body.meta_description
+            const sql = "INSERT INTO portofolio (created_at, title, introduction, year_project, scope, team, content_1, content_2, portofolio_cover, slug, meta_description, client_id, services_id, background_color) VALUES (?, ?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            const value = [created_at, title, introduction, year_project, scope, team, content1URL, content2URL, coverURL, slug, meta, client_id, services_id, background_color]
+            db.query(sql, value, (error, result) => {
+                if (error) {
+                    res.status(500).json({
+                        message: "Error inserting client",
+                        error: error
+                    });
+                } else {
+                    res.json({
+                        message: "Success",
+                        clientId: result.insertId
+                    });
+                }
+            })
         })
+        
     } catch {
         res.status(500).send({ error: 'Internal Server Error' });
     }
@@ -121,8 +137,13 @@ const deleteportofolio = (req, res) => {
 }
 
 const getportofoliobyID = (req,res) => {
-    const portofolioId = req.params.id
-    const sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.id = ?"
+    let sql, portofolioId
+    portofolioId = req.params.id
+    if (!isNaN(Number(portofolioId))) {
+        sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.id = ?"
+    } else {
+        sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.slug = ?"
+    }
     db.query(sql,[portofolioId], (error, result) => {
         if (error) {
             console.error("error fetching portofolio: ", error)
@@ -147,7 +168,7 @@ const getportofoliobyID = (req,res) => {
                         content_1 : result[0].content_1, 
                         // content_2 : result[0].content_2,
                         cover: result[0].portofolio_cover,
-                        slug: result[0].services_name.toLowerCase().replace(/ /g, '-')+result[0].slug,
+                        slug: result[0].slug,
                         meta_description : result[0].meta_description,  
                         created_at : result[0].created_at,
                         background_color : result[0].background_color,
@@ -198,11 +219,9 @@ const deleteportofoliobyID = (req, res) => {
 const putportofolio = async (req, res) => {
     const portofolioId = req.params.id
     const {title, meta_description, introduction, year_project,scope,team,client_id,services_id, background_color} = req.body
-    const slug = "/"+title.toLowerCase().replace(/ /g, '-')
     let coverURL, content1URL, content2URL = ""
     const coverFile = req.files && req.files['cover'] && req.files['cover'][0]
     const content1File = req.files && req.files['content1'] && req.files['content1'][0]
-
     try {
         const getServicesFromDB = () => new Promise((resolve, reject) => {
             const sql = 'SELECT services_id FROM portofolio WHERE id = ?';
@@ -235,53 +254,41 @@ const putportofolio = async (req, res) => {
         const client = client_id || await getClientFromDB();
         content1URL = content1File ? await file.uploadFile(content1File) : await getImageFromDB('content_1')
         coverURL = coverFile ? await file.uploadFile(coverFile) : await getImageFromDB('portofolio_cover');
-        
-        const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ?, background_color = ? WHERE id = ? "
-        const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, background_color, portofolioId]
-        db.query(sql, value, (error, result) => {
-            if(error){
-                console.log("error updating client", error)
-                res.status(500).json({
-                    message: "error updating portofolio",
-                    error : error
-                })
-            } else {
-                if (result.length === 0){
-                    res.status(404).json({
-                        message:"portofolio not found"
+        //get services_name
+        const serviceQuery = "SELECT services_name FROM services WHERE id = ?";
+        const serviceValue = [services];
+        db.query(serviceQuery, serviceValue, async (error, serviceResult) => {
+            if (error || serviceResult.length === 0) {
+                return res.status(500).json({ message: "Error fetching service name", error });
+            }
+            const services_name = serviceResult[0].services_name;
+            const slug = services_name.toLowerCase().replace(/\s+/g, '-')+"-"+title
+                .toLowerCase()                                
+                .replace(/[^a-z0-9\s-]/g, '')                 
+                .replace(/\s+/g, '-')                         
+                .replace(/-+/g, '-');
+            const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ?, background_color = ? WHERE id = ? "
+            const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, background_color, portofolioId]
+            db.query(sql, value, (error, result) => {
+                if(error){
+                    console.log("error updating client", error)
+                    res.status(500).json({
+                        message: "error updating portofolio",
+                        error : error
                     })
                 } else {
-                    res.json({
-                        message:"updated"
-                    })
+                    if (result.length === 0){
+                        res.status(404).json({
+                            message:"portofolio not found"
+                        })
+                    } else {
+                        res.json({
+                            message:"updated"
+                        })
+                    }
                 }
-            }
-        })
-
-        // updateportofolio()
-        // function updateportofolio(){
-        //     const sql = "UPDATE portofolio SET title = ? , introduction = ?, year_project = ?, scope = ?, team = ?, content_1 = ?, content_2 = ?, slug = ?, meta_description = ?, portofolio_cover = ?, client_id = ?, services_id = ? WHERE id = ? "
-        //     const value = [title, introduction, year_project, scope, team, content1URL, content2URL, slug, meta_description, coverURL, client, services, portofolioId]
-        //     db.query(sql, value, (error, result) => {
-        //         if(error){
-        //             console.log("error updating client", error)
-        //             res.status(500).json({
-        //                 message: "error updating portofolio",
-        //                 error : error
-        //             })
-        //         } else {
-        //             if (result.length === 0){
-        //                 res.status(404).json({
-        //                     message:"portofolio not found"
-        //                 })
-        //             } else {
-        //                 res.json({
-        //                     message:"updated"
-        //                 })
-        //             }
-        //         }
-        //     })
-        // }
+            })
+            })
 
     } catch(err) {
         console.error("An error occurred:", err);
@@ -295,62 +302,11 @@ const putportofolio = async (req, res) => {
     // console.log(title,introduction, year_project, scope,team,content_1,cover);
 }
 
-const getportfoliobySLUG = (req , res) => {
-    const portfolioSug = req.params.slug
-    const slugurl = "/" + portfolioSug.split('/')[1];
-    const sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.slug = ?"
-    db.query(sql,[slugurl], (error, result) => {
-        if (error) {
-            console.error("error fetching portofolio: ", error)
-            res.status(500).json({
-                message: "error fetching portofolio",
-                error : error
-            })
-        } else {
-            if (result.length === 0) {
-                res.status(404).json({
-                    message : "portofolio not found"
-                })
-            } else {
-                res.json({
-                    id : result[0].id,
-                    data : {
-                        title : result[0].title, 
-                        introduction : result[0].introduction, 
-                        year_project : result[0].year_project, 
-                        scope : result[0].scope, 
-                        team : result[0].team, 
-                        content_1 : result[0].content_1, 
-                        // content_2 : result[0].content_2,
-                        cover: result[0].portofolio_cover,
-                        slug: result[0].services_name.toLowerCase().replace(/ /g, '-')+result[0].slug,
-                        meta_description : result[0].meta_description,  
-                        created_at : result[0].created_at,
-                        background_color : result[0].background_color,
-                        client : {
-                            id : result[0].client_id,
-                            name :result[0].client_name,
-                            logo : result[0].logo
-                        },
-                        services : {
-                            id : result[0].services_id,
-                            name : result[0].services_name,
-                            cover : result[0].cover,
-                            short_description : result[0].short_description
-                        }
-                    }
-                })
-            }
-        }
-    })
-}
-
 module.exports = {
     getAllportofolio,
     postportofolio,
     deleteportofolio,
     getportofoliobyID,
     deleteportofoliobyID,
-    putportofolio,
-    getportfoliobySLUG
+    putportofolio
 }

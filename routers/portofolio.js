@@ -14,7 +14,5 @@ router.route('/:id')
     .delete(portofoliocontroller.deleteportofoliobyID)
     .put(upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'content1', maxCount: 1 }, { name: 'content2', maxCount: 1 }]), portofoliocontroller.putportofolio)
  
-router.route('/:slug(*)')
-    .get(portofoliocontroller.getportfoliobySLUG)
 
 module.exports = router
