@@ -65,6 +65,7 @@ const getAllhighlight = (req, res) => {
                             slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
                             meta_description : data.meta_description, 
                             created_at : data.created_at,
+                            background_color : data.background_color,
                             client : {
                                 id : data.client_id,
                                 name :data.client_name,
