@@ -141,7 +141,7 @@ const putclient = async (req, res) => {
             const sqlSelectImage = 'SELECT logo FROM client WHERE id = ?';
             db.query(sqlSelectImage, [clientId], (error, result) => {
                 if (error) return reject("Error fetching client image: " + error);
-                if (result.length === 0 || !result[0].logo) return reject("Client image not found in the database");
+                if (result.length === 0 || !result[0].logo) return resolve(null);
                 resolve(result[0].logo);
             });
         });
