@@ -294,12 +294,63 @@ const putportofolio = async (req, res) => {
     
     // console.log(title,introduction, year_project, scope,team,content_1,cover);
 }
- 
+
+const getportfoliobySLUG = (req , res) => {
+    const portfolioSug = req.params.slug
+    const slugurl = "/" + portfolioSug.split('/')[1];
+    const sql = "SELECT p.*,s.id as services_id, s.services_name, s.cover, s.short_description,cl.id as client_id, cl.client_name, cl.logo FROM portofolio p LEFT JOIN client cl ON p.client_id = cl.id LEFT JOIN services s ON p.services_id = s.id where p.slug = ?"
+    db.query(sql,[slugurl], (error, result) => {
+        if (error) {
+            console.error("error fetching portofolio: ", error)
+            res.status(500).json({
+                message: "error fetching portofolio",
+                error : error
+            })
+        } else {
+            if (result.length === 0) {
+                res.status(404).json({
+                    message : "portofolio not found"
+                })
+            } else {
+                res.json({
+                    id : result[0].id,
+                    data : {
+                        title : result[0].title, 
+                        introduction : result[0].introduction, 
+                        year_project : result[0].year_project, 
+                        scope : result[0].scope, 
+                        team : result[0].team, 
+                        content_1 : result[0].content_1, 
+                        // content_2 : result[0].content_2,
+                        cover: result[0].portofolio_cover,
+                        slug: result[0].services_name.toLowerCase().replace(/ /g, '-')+result[0].slug,
+                        meta_description : result[0].meta_description,  
+                        created_at : result[0].created_at,
+                        background_color : result[0].background_color,
+                        client : {
+                            id : result[0].client_id,
+                            name :result[0].client_name,
+                            logo : result[0].logo
+                        },
+                        services : {
+                            id : result[0].services_id,
+                            name : result[0].services_name,
+                            cover : result[0].cover,
+                            short_description : result[0].short_description
+                        }
+                    }
+                })
+            }
+        }
+    })
+}
+
 module.exports = {
     getAllportofolio,
     postportofolio,
     deleteportofolio,
     getportofoliobyID,
     deleteportofoliobyID,
-    putportofolio
+    putportofolio,
+    getportfoliobySLUG
 }
