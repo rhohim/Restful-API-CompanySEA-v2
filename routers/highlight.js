@@ -9,5 +9,6 @@ router.route('/')
 
 router.route('/:id')
     .delete(highlightcontroller.deletehiglightbyID)
+    .get(highlightcontroller.gethighlightbyslug)
 
 module.exports = router

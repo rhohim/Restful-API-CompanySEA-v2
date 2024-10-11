@@ -62,7 +62,7 @@ const getAllhighlight = (req, res) => {
                             content_1 : data.content_1, 
                             content_2 : data.content_2,
                             cover: data.portofolio_cover,
-                            slug: data.services_name.toLowerCase().replace(/ /g, '-')+data.slug,
+                            slug: data.slug,
                             meta_description : data.meta_description, 
                             created_at : data.created_at,
                             background_color : data.background_color,
@@ -144,10 +144,80 @@ const deletehiglightbyID = (req, res) => {
         }
     });
 }
+const gethighlightbyslug = (req, res) => {
+    const portfolioslug = req.params.id
+    const sql = `SELECT 
+                hp.*, hp.id as h_portfolio_id,
+                p.*, p.id as portfolio_id,
+                s.id as services_id, s.services_name, s.cover, s.short_description,
+                cl.id as client_id, cl.client_name, cl.logo
+                FROM 
+                    portfolio_highlight hp
+                JOIN 
+                    portofolio p ON hp.portfolio_id = p.id
+                JOIN 
+                    client cl ON p.client_id = cl.id
+                JOIN 
+                    services s ON p.services_id = s.id
+                WHERE 
+                    p.slug = ?`
+    db.query(sql,[portfolioslug], (error, result) => {
+        if(error){
+            res.status(500).json({
+                message : "Error Fatching History",
+                error : error.message
+            })
+        } else {
+            if(result.length === 0){
+                res.status(404).json({
+                    message:"Highlight Not Found"
+                })
+            } else {
+                const formattedData = result.map(data => ({
+                    id : data.h_portfolio_id,
+                    portfolio : {
+                        id : data.portfolio_id,
+                        data : {
+                            title : data.title, 
+                            introduction : data.introduction, 
+                            year_project : data.year_project, 
+                            scope : data.scope, 
+                            team : data.team, 
+                            content_1 : data.content_1, 
+                            content_2 : data.content_2,
+                            cover: data.portofolio_cover,
+                            slug: data.slug,
+                            meta_description : data.meta_description, 
+                            created_at : data.created_at,
+                            background_color : data.background_color,
+                            client : {
+                                id : data.client_id,
+                                name :data.client_name,
+                                logo : data.logo
+                            },
+                            services : {
+                                id : data.services_id,
+                                name : data.services_name,
+                                cover : data.cover,
+                                short_description : data.short_description
+                            }
+                        }
+                    }
+                }))
+                res.json({
+                    message : "success",
+                    highligt_portfolio :formattedData
+                })
+            }
+        }
+    })
+    
+}
 
 module.exports = {
     posthighlight,
     getAllhighlight,
     deletehighlight,
-    deletehiglightbyID
+    deletehiglightbyID,
+    gethighlightbyslug
 }
